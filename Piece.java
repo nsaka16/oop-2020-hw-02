@@ -34,11 +34,11 @@ public class Piece {
 	 Makes its own copy of the array and the TPoints inside it.
 	*/
 	public Piece(TPoint[] points) {
-		// YOUR CODE HERE
+		if( points == null ) body = null;
+		fillBody( points );
+		setWidth();
+		setHeight();
 	}
-	
-
-	
 	
 	/**
 	 * Alternate constructor, takes a String with the x,y body points
@@ -124,6 +124,47 @@ public class Piece {
 		return true;
 	}
 
+	/*
+		Fill body of Piece object.
+		Used in Constructor.
+	 */
+	private void fillBody( TPoint[] points )
+	{
+		this.body = new TPoint[ points.length ];
+		int i = 0;
+		for( TPoint point : points )
+		{
+			this.body [ i++ ] = new TPoint( point );
+		}
+	}
+
+	/*
+		Used when Piece is created to set height correctly.
+	 	Generally speaking, Height of Piece == biggest y in it's body's, TPoint, elements.
+	 */
+	private void setHeight()
+	{
+		int result = 0;
+		for( TPoint point : body )
+		{
+			if( point.y > result ) result = point.y;
+		}
+		this.height = result + 1; // + 1, because heigt == index + 1.
+	}
+
+
+	/*
+		Used when Piece is created to set Width correctly.
+	 */
+	private void setWidth()
+	{
+		int result = 0;
+		for( TPoint point : body )
+		{
+			if( point.x > result ) result = point.x;
+		}
+		this.width = result + 1;	// + 1, because width == index + 1.
+	}
 
 	// String constants for the standard 7 tetris pieces
 	public static final String STICK_STR	= "0 0	0 1	 0 2  0 3";
@@ -167,8 +208,6 @@ public class Piece {
 				makeFastRotations(new Piece(PYRAMID_STR)),
 			};
 		}
-		
-		
 		return Piece.pieces;
 	}
 	
