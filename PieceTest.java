@@ -5,16 +5,9 @@ import junit.framework.TestCase;
 import java.util.*;
 
 /*
-  Unit test for Piece class -- starter shell.
+	Tests for Piece class.
  */
 public class PieceTest extends TestCase {
-	// You can create data to be used in the your
-	// test cases like this. For each run of a test method,
-	// a new PieceTest object is created and setUp() is called
-	// automatically by JUnit.
-	// For example, the code below sets up some
-	// pyramid and s pieces in instance variables
-	// that can be used in tests.
 
 	/*
 		These variables represent rotations of each Piece.
@@ -28,7 +21,8 @@ public class PieceTest extends TestCase {
 	private Piece[] pieces;  // This array is filled during setUp() method.
 
 	/*
-		This setup is Initialises global variables using pieces array from Piece class.
+		I set up some global Piece objects using constructors() in setUp(),
+		but i'll also have some local(in some methods) Piece objects.
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -236,7 +230,6 @@ public class PieceTest extends TestCase {
 		assertEquals( 3, l2_4.getWidth() );
 		assertEquals( 2, l2_4.getHeight() );
 		assertEquals( l2_1.getWidth(), l2_4.fastRotation().getWidth() );
-
 	}
 
 	/*
@@ -274,7 +267,6 @@ public class PieceTest extends TestCase {
 		//second/third time rotated s2.
 		assertEquals( s2_2.fastRotation().getWidth(), s2_1.getWidth() );
 		assertEquals( s2_2.fastRotation().fastRotation().getWidth(), s2_2.getWidth() );
-
 	}
 
 	/*
@@ -293,7 +285,6 @@ public class PieceTest extends TestCase {
 
 		//third time rotated pyr1.
 		assertTrue(Arrays.equals(new int[] {0, 1}, pyr4.getSkirt()));
-
 	}
 
 	/*
@@ -309,58 +300,75 @@ public class PieceTest extends TestCase {
 	}
 
 	/*
-		Testing Square skirt().
+		This function checks Square's skirt's correctness.
 	 */
 	public void squareSkirt()
 	{
+		//original square.
 		assertTrue(Arrays.equals(new int[] { 0 , 0 }, square.getSkirt()));
 
-		square = square.fastRotation();
-
-		assertTrue(Arrays.equals(new int[] { 0 , 0 }, square.getSkirt()));	//Checking that nothing changes after rotation.
+		//first time rotated square.
+		assertTrue(Arrays.equals(new int[] { 0 , 0 }, square.fastRotation().getSkirt()));	//Checking that nothing changes after rotation.
 	}
 
 	/*
-		Testing LSkirt().
-		Creating new Piece objects instead of using pieces array.
+		This function checks L's skirt's correctness.
 	 */
 	public void lSkirt()
 	{
-		Piece l1Piece_1 = new Piece( Piece.L1_STR );
-		assertTrue(Arrays.equals(new int[] { 0 , 0 }, l1Piece_1.getSkirt()));
+		//getting L1 variable, from pieces array.
+		Piece l1_2 = pieces[ Piece.L1 ];	//array has 1'st rotations in it.
+		Piece l1_3 = l1_2.fastRotation();
+		Piece l1_4 = l1_3.fastRotation();
+		Piece l1_1 = l1_4.fastRotation();
 
-		Piece l1Piece_2 = l1Piece_1.fastRotation();
-		assertTrue(Arrays.equals(new int[] { 0 , 0 ,0 }, l1Piece_2.getSkirt()));
+		//original L1.
+		assertTrue(Arrays.equals(new int[] { 0 , 0 }, l1_1.getSkirt()));
 
-		Piece l1Piece_3 = l1Piece_2.fastRotation();
-		assertTrue(Arrays.equals(new int[] { 2 , 0 }, l1Piece_3.getSkirt()));
+		//first rotation of L1.
+		assertTrue(Arrays.equals(new int[] { 0 , 0 ,0 }, l1_2.getSkirt()));
 
-		Piece l1Piece_4 = l1Piece_3.fastRotation();
-		assertTrue(Arrays.equals(new int[] { 0 , 1, 1 }, l1Piece_4.getSkirt()));
+		//second rotation of L1.
+		assertTrue(Arrays.equals(new int[] { 2 , 0 }, l1_3.getSkirt()));
 
-		Piece l2Piece_1 = new Piece( Piece.L2_STR );
-		assertTrue(Arrays.equals(new int[] { 0 , 0 }, l2Piece_1.getSkirt()));
+		//third rotation of L1.
+		assertTrue(Arrays.equals(new int[] { 0 , 1, 1 }, l1_4.getSkirt()));
 
-		Piece l2Piecec_2 = l2Piece_1.fastRotation();
-		assertTrue(Arrays.equals(new int[] { 1 , 1 , 0 }, l2Piece_1.getSkirt()));
+		//getting L2 variable, from pieces array.
+		Piece l2_2 = pieces[ Piece.L2 ];	//array has 1'st rotations in it.
+		Piece l2_3 = l1_2.fastRotation();
+		Piece l2_4 = l1_3.fastRotation();
+		Piece l2_1 = l1_4.fastRotation();
+
+		//original L2.
+		assertTrue(Arrays.equals(new int[] { 0 , 0 }, l2_1.getSkirt()));
+
+		//first rotation of L2.
+		assertTrue(Arrays.equals(new int[] { 1 , 1 , 0 }, l2_2.getSkirt()));
+
+		//second rotation of L2.
+		assertTrue(Arrays.equals(new int[] { 0 , 2 }, l2_3.getSkirt()));
+
+		//third rotation of L2.
+		assertTrue(Arrays.equals(new int[] { 0 , 0 , 0 }, l2_4.getSkirt()));
 	}
 
 	/*
-		S figure skirt().
-	 */
+    	This function checks S's skirt's correctness.
+ 	*/
 	public void sSkirt()
 	{
-		Piece s1Piece_1 = new Piece( Piece.S1_STR );
-		assertTrue(Arrays.equals(new int[] { 0 , 0 , 1	 }, s1Piece_1.getSkirt()));
+		//original s1.
+		assertTrue(Arrays.equals(new int[] { 0 , 0 , 1	 }, s1_1.getSkirt()));
 
-		Piece s1Piece_2 = s1Piece_1.computeNextRotation();
-		assertTrue(Arrays.equals(new int[] { 1 , 0 }, s1Piece_2.getSkirt()));
+		//first rotation of s1.
+		assertTrue(Arrays.equals(new int[] { 1 , 0 }, s1_2.getSkirt()));
 
-		Piece s2Piece_1 = new Piece( Piece.S2_STR );
-		assertTrue(Arrays.equals(new int[] { 1 , 0 , 0	 }, s2Piece_1.getSkirt()));
+		//original s2.
+		assertTrue(Arrays.equals(new int[] { 1 , 0 , 0	 }, s2_1.getSkirt()));
 
-		Piece s2Piece_2 = s1Piece_1.computeNextRotation();
-		assertTrue(Arrays.equals(new int[] { 0 , 1 }, s2Piece_2.getSkirt()));
+		//first rotation of s2.
+		assertTrue(Arrays.equals(new int[] { 0 , 1 }, s2_2.getSkirt()));
 
 	}
 
