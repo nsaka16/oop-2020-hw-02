@@ -83,7 +83,7 @@ public class PieceTest extends TestCase {
 	{
 		//using global S Piece.
 		assertTrue( s1_1.equals( s1_1.fastRotation().fastRotation() )  );	//S - figure's second rotation == original one.
-		assertTrue( s1_1.fastRotation().equals( pieces[ Piece.S1 ] ) );	//	*pieces contains first rotations.
+		assertTrue( s1_1.fastRotation().equals( pieces[ Piece.S1 ].fastRotation() ) );	//	*pieces contains first rotations.
 		assertTrue( s1_1.equals( s1_1 ) );
 		assertFalse( s1_1.equals( s1_1.fastRotation() ) );
 
@@ -96,8 +96,8 @@ public class PieceTest extends TestCase {
 
 		assertTrue( l1_1.fastRotation().fastRotation().fastRotation().fastRotation().equals( l1_1 ) );
 		assertTrue( l1_1.equals( l1_4.fastRotation() ) );
-		assertTrue( l1_2.equals( pieces[ Piece.L1 ] ) );
-		assertTrue( l1_3.equals( pieces[ Piece.L1 ].fastRotation() ) );
+		assertTrue( l1_2.equals( pieces[ Piece.L1 ].fastRotation() ) );
+		assertTrue( l1_3.equals( pieces[ Piece.L1 ].fastRotation().fastRotation() ) );
 		assertTrue( l1_1.fastRotation().fastRotation().fastRotation().equals( l1_4 ) );
 		assertFalse( l1_1.equals( l1_4 ) );
 
@@ -110,16 +110,16 @@ public class PieceTest extends TestCase {
 		assertTrue( square.equals( square ) );
 
 		//using global stick1,stick2 Pieces.
-		assertTrue( stick1.equals( pieces[ Piece.STICK ].fastRotation() ) );
+		assertTrue( stick1.equals( pieces[ Piece.STICK ].fastRotation().fastRotation() ) );
 		assertTrue( stick1.equals( stick1.fastRotation().fastRotation() ));
 		assertFalse( stick2.equals( stick1 ) );
-		assertTrue( stick2.equals( pieces[ Piece.STICK ] ));
+		assertTrue( stick2.equals( pieces[ Piece.STICK ].fastRotation() ));
 
 
 		//using global pyramids Pieces.
 		assertTrue( pyr4.fastRotation().equals( pyr1 ) );
 		assertTrue( pyr1.fastRotation().fastRotation().fastRotation().fastRotation().equals( pyr1 ) );
-		assertTrue( pyr2.equals( pieces[ Piece.PYRAMID ] ));
+		assertTrue( pyr2.equals( pieces[ Piece.PYRAMID ].fastRotation() ));
 		assertTrue( pyr1.equals( pyr1 ) );
 		assertFalse( pyr4.equals( pyr1 ) );
 	}
@@ -155,11 +155,11 @@ public class PieceTest extends TestCase {
 
 		assertEquals( 4, stick2.getWidth() );
 		assertEquals( 1, stick2.getHeight() );
-		assertEquals( pieces[ Piece.STICK ].getWidth() , stick2.getWidth() );
+		assertEquals( pieces[ Piece.STICK ].fastRotation().getWidth() , stick2.getWidth() );
 
 		assertEquals( 1, stick1.getWidth() );
 		assertEquals( 4, stick1.getHeight() );
-		assertEquals( pieces[ Piece.STICK ].fastRotation().getWidth(), stick1.getWidth() );
+		assertEquals( pieces[ Piece.STICK ].fastRotation().fastRotation().getWidth(), stick1.getWidth() );
 	}
 
 	/*
@@ -169,8 +169,8 @@ public class PieceTest extends TestCase {
 	{
 		assertEquals( 4, square.getWidth() );
 		assertEquals( 4, square.getHeight() );
-		assertEquals( pieces[ Piece.SQUARE ].getWidth(), square.getWidth() );
-		assertEquals( pieces[ Piece.SQUARE ].getWidth(), square.fastRotation().getWidth() );
+		assertEquals( pieces[ Piece.SQUARE ].fastRotation().getWidth(), square.getWidth() );
+		assertEquals( pieces[ Piece.SQUARE ].fastRotation().getWidth(), square.fastRotation().getWidth() );
 	}
 
 	/*
@@ -191,13 +191,13 @@ public class PieceTest extends TestCase {
 		//first time rotated L1.
 		assertEquals( 3, l1_2.getWidth() );
 		assertEquals( 2, l1_2.getHeight() );
-		assertEquals( pieces[ Piece.L1 ].getWidth(), l1_2.getWidth() );
-		assertEquals( pieces[ Piece.L1 ].getHeight(), l1_2.getHeight() );
+		assertEquals( pieces[ Piece.L1 ].fastRotation().getWidth(), l1_2.getWidth() );
+		assertEquals( pieces[ Piece.L1 ].fastRotation().getHeight(), l1_2.getHeight() );
 
 		//second time rotated L1.
 		assertEquals( l1_1.getWidth(), l1_3.getWidth() ); // l1_3's width,height == l1_1's width/height.
 		assertEquals( l1_1.getHeight(), l1_3.getHeight() );
-		assertEquals( pieces[ Piece.L1 ].fastRotation().getWidth(), l1_3.getWidth() );
+		assertEquals( pieces[ Piece.L1 ].fastRotation().fastRotation().getWidth(), l1_3.getWidth() );
 
 		//third time rotated L1.
 		assertEquals( 3, l1_4.getWidth() );
@@ -218,13 +218,13 @@ public class PieceTest extends TestCase {
 		//first time rotated L2.
 		assertEquals( 3, l2_2.getWidth() );
 		assertEquals( 2, l2_2.getHeight() );
-		assertEquals( pieces[ Piece.L2 ].getWidth(), l2_2.getWidth() );
-		assertEquals( pieces[ Piece.L2 ].getHeight(), l2_2.getHeight() );
+		assertEquals( pieces[ Piece.L2 ].fastRotation().getWidth(), l2_2.getWidth() );
+		assertEquals( pieces[ Piece.L2 ].fastRotation().getHeight(), l2_2.getHeight() );
 
 		//second time rotated L2.
 		assertEquals( l2_1.getWidth(), l2_3.getWidth() ); // l2_3's width,height == l2_1's width/height.
 		assertEquals( l2_1.getHeight(), l2_3.getHeight() );
-		assertEquals( pieces[ Piece.L2 ].fastRotation().getWidth(), l2_3.getWidth() );
+		assertEquals( pieces[ Piece.L2 ].fastRotation().fastRotation().getWidth(), l2_3.getWidth() );
 
 		//third time rotated L2.
 		assertEquals( 3, l2_4.getWidth() );
@@ -246,8 +246,8 @@ public class PieceTest extends TestCase {
 		//first time rotated s1.
 		assertEquals( 2, s1_2.getWidth() );
 		assertEquals( 3, s1_2.getHeight() );
-		assertEquals( pieces[ Piece.S1 ].getWidth(), s1_2.getWidth() );
-		assertEquals( pieces[ Piece.S1 ].getHeight(), s1_2.getHeight() );
+		assertEquals( pieces[ Piece.S1 ].fastRotation().getWidth(), s1_2.getWidth() );
+		assertEquals( pieces[ Piece.S1 ].fastRotation().getHeight(), s1_2.getHeight() );
 
 		//second/third time rotated s1.
 		assertEquals( s1_2.fastRotation().getWidth(), s1_1.getWidth() );
@@ -261,8 +261,8 @@ public class PieceTest extends TestCase {
 		//first time rotated s2.
 		assertEquals( 2, s2_2.getWidth() );
 		assertEquals( 3, s2_2.getHeight() );
-		assertEquals( pieces[ Piece.S2 ].getWidth(), s2_2.getWidth() );
-		assertEquals( pieces[ Piece.S2 ].getHeight(), s2_2.getHeight() );
+		assertEquals( pieces[ Piece.S2 ].fastRotation().getWidth(), s2_2.getWidth() );
+		assertEquals( pieces[ Piece.S2 ].fastRotation().getHeight(), s2_2.getHeight() );
 
 		//second/third time rotated s2.
 		assertEquals( s2_2.fastRotation().getWidth(), s2_1.getWidth() );
@@ -317,10 +317,10 @@ public class PieceTest extends TestCase {
 	public void lSkirt()
 	{
 		//getting L1 variable, from pieces array.
-		Piece l1_2 = pieces[ Piece.L1 ];	//array has 1'st rotations in it.
+		Piece l1_1 = pieces[ Piece.L1 ];	//array has 1'st rotations in it.
+		Piece l1_2 = l1_1.fastRotation();
 		Piece l1_3 = l1_2.fastRotation();
 		Piece l1_4 = l1_3.fastRotation();
-		Piece l1_1 = l1_4.fastRotation();
 
 		//original L1.
 		assertTrue(Arrays.equals(new int[] { 0 , 0 }, l1_1.getSkirt()));
@@ -335,10 +335,10 @@ public class PieceTest extends TestCase {
 		assertTrue(Arrays.equals(new int[] { 0 , 1, 1 }, l1_4.getSkirt()));
 
 		//getting L2 variable, from pieces array.
-		Piece l2_2 = pieces[ Piece.L2 ];	//array has 1'st rotations in it.
+		Piece l2_1 = pieces[ Piece.L2 ];	//array has 1'st rotations in it.
+		Piece l2_2 = l1_1.fastRotation();
 		Piece l2_3 = l1_2.fastRotation();
 		Piece l2_4 = l1_3.fastRotation();
-		Piece l2_1 = l1_4.fastRotation();
 
 		//original L2.
 		assertTrue(Arrays.equals(new int[] { 0 , 0 }, l2_1.getSkirt()));
