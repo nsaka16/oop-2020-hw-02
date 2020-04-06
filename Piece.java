@@ -38,7 +38,7 @@ public class Piece {
 		this.width = calculateWidth( body );		//setting width.
 		this.height = calculateHeight( body );	//setting height
 		setSkirt();		//setting skirt.
-
+		//makeFastRotations( this );
 	}
 	
 	/**
@@ -147,7 +147,7 @@ public class Piece {
 	 */
 	public TPoint[] getCCRotation( TPoint[] array )
 	{
-		TPoint[] result = new TPoint[array.length];	//It's important not to change original body array.
+		TPoint[] result = new TPoint[ array.length ];	//It's important not to change original body array.
 
 		System.arraycopy( array,0,  result, 0, array.length );
 
@@ -188,6 +188,9 @@ public class Piece {
 		}
 	}
 
+	/*
+		Swaps x,y coordinates of a TPoints.
+	 */
 	private void swapCoordinates( TPoint point )
 	{
 		int temp = point.x;
@@ -317,8 +320,21 @@ public class Piece {
 	 to the first piece.
 	*/
 	private static Piece makeFastRotations(Piece root) {
-		// YOUR CODE HERE
-		return null; // YOUR CODE HERE
+
+		//get 2 pointers, using while cycle connect circle of rotations.
+		Piece previousPiece = root;
+		Piece nextPiece = root.computeNextRotation();
+
+		while( !nextPiece.equals( root ) )
+		{
+			previousPiece.next = nextPiece;
+			previousPiece = nextPiece;
+			nextPiece = nextPiece.computeNextRotation();
+		}
+
+		//Make Last connection.
+		previousPiece.next = nextPiece;
+		return root;
 	}
 	
 	
