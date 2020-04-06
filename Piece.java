@@ -11,7 +11,7 @@ import java.util.*;
  Piece pyra = new Piece(PYRAMID_STR);		// Create piece from string
  int width = pyra.getWidth();			// 3
  Piece pyra2 = pyramid.computeNextRotation(); // get rotation, slow way
- 
+
  Piece[] pieces = Piece.getPieces();	// the array of root pieces
  Piece stick = pieces[STICK];
  int width = stick.getWidth();		// get its width
@@ -38,7 +38,7 @@ public class Piece {
 		this.width = calculateWidth( body );		//setting width.
 		this.height = calculateHeight( body );	//setting height
 		setSkirt();		//setting skirt.
-		//makeFastRotations( this );
+
 	}
 	
 	/**
@@ -89,7 +89,9 @@ public class Piece {
 	 */
 	public Piece computeNextRotation() {
 		TPoint[] nextRotation = getCCRotation( this.body );	//get corresponding array of rotated piece.
-		return new Piece( nextRotation );	//It's crucial to create new one.
+		Piece newPiece = new Piece( nextRotation );
+		this.next = newPiece;
+		return 	newPiece;//It's crucial to create new one.
 	}
 
 	/**
@@ -145,7 +147,7 @@ public class Piece {
 		Returns TPoint[] array filled with next rotation's TPoints.
 	 	CC - mean counter clock wise.
 	 */
-	public TPoint[] getCCRotation( TPoint[] array )
+	private TPoint[] getCCRotation( TPoint[] array )
 	{
 		TPoint[] result = new TPoint[ array.length ];	//It's important not to change original body array.
 
@@ -324,7 +326,7 @@ public class Piece {
 		//get 2 pointers, using while cycle connect circle of rotations.
 		Piece previousPiece = root;
 		Piece nextPiece = root.computeNextRotation();
-
+		System.out.println("asd");
 		while( !nextPiece.equals( root ) )
 		{
 			previousPiece.next = nextPiece;
