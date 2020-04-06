@@ -340,21 +340,18 @@ public class PieceTest extends TestCase {
 
 		//getting L2 variable, from pieces array.
 		Piece l2_1 = pieces[ Piece.L2 ];	//array has 1'st rotations in it.
-		Piece l2_2 = l1_1.fastRotation();
-		Piece l2_3 = l1_2.fastRotation();
-		Piece l2_4 = l1_3.fastRotation();
 
 		//original L2.
 		assertTrue(Arrays.equals(new int[] { 0 , 0 }, l2_1.getSkirt()));
 
 		//first rotation of L2.
-		//assertTrue(Arrays.equals(new int[] { 1 , 1 , 0 }, l2_2.getSkirt()));
+		assertTrue(Arrays.equals(new int[] { 1 , 1 , 0 }, l2_1.fastRotation().getSkirt()));
 
 		//second rotation of L2.
-		//assertTrue(Arrays.equals(new int[] { 0 , 2 }, l2_3.getSkirt()));
+		assertTrue(Arrays.equals(new int[] { 0 , 2 }, l2_1.fastRotation().fastRotation().getSkirt()));
 
 		//third rotation of L2.
-		//assertTrue(Arrays.equals(new int[] { 0 , 0 , 0 }, l2_4.getSkirt()));
+		assertTrue(Arrays.equals(new int[] { 0 , 0 , 0 }, l2_1.fastRotation().fastRotation().fastRotation().getSkirt()));
 	}
 
 	/*
