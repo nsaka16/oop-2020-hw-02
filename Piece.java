@@ -39,6 +39,7 @@ public class Piece {
 		this.height = calculateHeight( body );	//setting height
 		setSkirt();		//setting skirt.
 
+		//next pointer is only used for piecies[] members.
 	}
 	
 	/**
@@ -88,10 +89,10 @@ public class Piece {
 	 rotated from the receiver.
 	 */
 	public Piece computeNextRotation() {
+
 		TPoint[] nextRotation = getCCRotation( this.body );	//get corresponding array of rotated piece.
-		Piece newPiece = new Piece( nextRotation );
-		this.next = newPiece;
-		return 	newPiece;//It's crucial to create new one.
+
+		return new Piece( nextRotation );	//It's crucial to create new one.
 	}
 
 	/**
@@ -145,13 +146,16 @@ public class Piece {
 
 	/*
 		Returns TPoint[] array filled with next rotation's TPoints.
-	 	CC - mean counter clock wise.
+	 	CC - means counter clock wise.
 	 */
 	private TPoint[] getCCRotation( TPoint[] array )
 	{
 		TPoint[] result = new TPoint[ array.length ];	//It's important not to change original body array.
 
-		System.arraycopy( array,0,  result, 0, array.length );
+		for( int i = 0; i < result.length; i++ )
+		{
+			result[i] = new TPoint( array[i].x, array[i].y );
+		}
 
 		//invert passed array.
 		invertArray( result );
@@ -326,7 +330,7 @@ public class Piece {
 		//get 2 pointers, using while cycle connect circle of rotations.
 		Piece previousPiece = root;
 		Piece nextPiece = root.computeNextRotation();
-		System.out.println("asd");
+		root.next = nextPiece;
 		while( !nextPiece.equals( root ) )
 		{
 			previousPiece.next = nextPiece;
