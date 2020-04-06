@@ -34,10 +34,11 @@ public class Piece {
 	 Makes its own copy of the array and the TPoints inside it.
 	*/
 	public Piece(TPoint[] points) {
-		if( points == null ) body = null;
-		fillBody( points );
-		setWidth();
-		setHeight();
+		fillBody( points );		//copying to body.
+		this.width = calculateWidth( body );		//setting width.
+		this.height = calculateHeight( body );	//setting height
+		setSkirt();		//setting skirt.
+
 	}
 	
 	/**
@@ -87,8 +88,8 @@ public class Piece {
 	 rotated from the receiver.
 	 */
 	public Piece computeNextRotation() {
-		// YOUR CODE HERE
-		return null; // YOUR CODE HERE
+		TPoint[] nextRotation = getCCRotation( this.body );	//get corresponding array of rotated piece.
+		return new Piece( nextRotation );	//It's crucial to create new one.
 	}
 
 	/**
@@ -119,11 +120,80 @@ public class Piece {
 		// (null will be false)
 		if (!(obj instanceof Piece)) return false;
 		Piece other = (Piece)obj;
-		
-		// YOUR CODE HERE
+
+		TPoint [] otherBody = other.getBody();
+		for( TPoint point : this.getBody() )
+		{
+			if( !isInBody( point, otherBody ) ) return false;
+		}
 		return true;
 	}
 
+	/*
+		Returns true if passed TPoint point is in passed TPoint[] array.
+	 */
+	private boolean isInBody( TPoint point, TPoint[] array )
+	{
+		for( TPoint temp : array )
+		{
+			if( temp.equals( point ) ) return true;
+		}
+		return false;
+	}
+
+	/*
+		Returns TPoint[] array filled with next rotation's TPoints.
+	 	CC - mean counter clock wise.
+	 */
+	public TPoint[] getCCRotation( TPoint[] array )
+	{
+		TPoint[] result = new TPoint[array.length];	//It's important not to change original body array.
+
+		System.arraycopy( array,0,  result, 0, array.length );
+
+		//invert passed array.
+		invertArray( result );
+
+		//Since we are asked to compute counter clockwise rotation
+		//after swapping we'll have to mirror only on x.
+		mirrorVertically( result );
+
+		return result;
+	}
+
+	/*
+		Swaps x,y coordinates for each TPoint in array.
+	 */
+	private void invertArray( TPoint[] array )
+	{
+		for( TPoint point : array )
+		{
+			swapCoordinates( point );
+		}
+	}
+
+	/*
+		Mirroring TPoint array vertically(Over x axis).
+	 */
+	private void mirrorVertically( TPoint[] array )
+	{
+		//Idea of mirroring over x axis, is that, change each point's
+		//	x value to  figure's (width - 1) - x.
+
+		int width = calculateWidth( array );
+
+		for( TPoint point : array )
+		{
+			point.x = (width - 1) - point.x ;
+		}
+	}
+
+	private void swapCoordinates( TPoint point )
+	{
+		int temp = point.x;
+		point.x = point.y;
+		point.y = temp;
+	}
 	/*
 		Fill body of Piece object.
 		Used in Constructor.
@@ -139,32 +209,53 @@ public class Piece {
 	}
 
 	/*
-		Used when Piece is created to set height correctly.
-	 	Generally speaking, Height of Piece == biggest y in it's body's, TPoint, elements.
+	 	Height of Piece == biggest y index + 1 in it's body's, TPoint elements.
 	 */
-	private void setHeight()
+	private int calculateHeight( TPoint[] array )
 	{
 		int result = 0;
-		for( TPoint point : body )
+		for( TPoint point : array )
 		{
 			if( point.y > result ) result = point.y;
 		}
-		this.height = result + 1; // + 1, because heigt == index + 1.
+		return result + 1;
 	}
 
 
 	/*
-		Used when Piece is created to set Width correctly.
+	 	Width of Piece == biggest x index + 1 in it's body's, TPoint elements.
 	 */
-	private void setWidth()
+	private int calculateWidth( TPoint[] array )
 	{
 		int result = 0;
-		for( TPoint point : body )
+		for( TPoint point : array )
 		{
 			if( point.x > result ) result = point.x;
 		}
-		this.width = result + 1;	// + 1, because width == index + 1.
+		return result + 1;	//+1, since width is last index + 1.
 	}
+
+	/*
+		Skirt of a piece.
+	 */
+	private void setSkirt()
+	{
+		//skirt is as wide as width of figure.
+		//*Body may not be in a correct sequence.
+		skirt = new int[ getWidth() ];
+		Arrays.fill( skirt, Integer.MAX_VALUE);	//doing so because of first iteration should always be less.
+		for( TPoint point : body )
+		{
+			int y = point.y;	//get x of TPoint.
+
+			int x = point.x;	//get y of TPoint.
+
+			int currentHeight = skirt[ x ];	//get current height of according x.
+
+			if( y < currentHeight ) skirt[ x ] = y;	//skirt's members should always be smallest y-s.
+		}
+	}
+
 
 	// String constants for the standard 7 tetris pieces
 	public static final String STICK_STR	= "0 0	0 1	 0 2  0 3";
