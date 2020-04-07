@@ -52,7 +52,20 @@ public class PieceTest extends TestCase {
 		stick1 = new Piece( Piece.STICK_STR );
 		stick2 = stick1.computeNextRotation();
 	}
-	
+
+	/*
+		Writing tests for TPoint class.
+	 */
+	public void testTPoint()
+	{
+		TPoint point1 = new TPoint(1,2);
+		TPoint point2 = new TPoint(point1);
+
+		assertTrue( point1.equals(point2) );
+		assertTrue( point1.toString().equals("(1,2)") );
+		assertFalse( point1.equals( null ) );
+		assertTrue( point1.equals( point1 ) );
+	}
 
 	/*
 		Tests width/height properties' correctness for each figure.
@@ -65,6 +78,18 @@ public class PieceTest extends TestCase {
 		sSizeTest();
 	}
 
+	//This is used as in one case Piece class'es parsePoint()
+	// should throw an exception, for 100% line coverage.
+	public void testException()
+	{
+		try
+		{
+			Piece piece = new Piece("c");
+		}
+		catch ( RuntimeException e )
+		{
+			assertEquals("Could not parse x,y string:c", e.getMessage()); }
+	}
 
 	/*
 		Testing figures' skirt() methods.
@@ -90,6 +115,7 @@ public class PieceTest extends TestCase {
 		assertTrue( s1_1.computeNextRotation().equals( pieces[ Piece.S1 ].fastRotation() ) );	//	*pieces contains first rotations.
 		assertTrue( s1_1.equals( s1_1 ) );
 		assertFalse( s1_1.equals( s1_1.computeNextRotation() ) );
+		assertFalse( s1_1.equals(null) );
 
 		//Creating local l1 Piece.
 		Piece l1_1 = pieces[ Piece.L1 ];
@@ -105,7 +131,7 @@ public class PieceTest extends TestCase {
 		assertTrue( l1_1.fastRotation().fastRotation().fastRotation().equals( l1_4 ) );
 		assertFalse( l1_1.equals( l1_4 ) );
 
-
+	
 
 		//using global square Piece.
 		assertTrue( square.equals( pieces[ Piece.SQUARE ] ) );
