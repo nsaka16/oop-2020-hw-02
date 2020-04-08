@@ -39,7 +39,7 @@ public class Piece {
 		this.height = calculateHeight( body );	//setting height
 		setSkirt();		//setting skirt.
 
-		//next pointer is only used for piecies[] members.
+		//next pointer is only used for pieces[] members.
 	}
 	
 	/**

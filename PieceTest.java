@@ -84,11 +84,11 @@ public class PieceTest extends TestCase {
 	{
 		try
 		{
-			Piece piece = new Piece("c");
+			Piece piece = new Piece("blabla");
 		}
 		catch ( RuntimeException e )
 		{
-			assertEquals("Could not parse x,y string:c", e.getMessage()); }
+			assertEquals("Could not parse x,y string:blabla", e.getMessage()); }
 	}
 
 	/*
@@ -131,7 +131,7 @@ public class PieceTest extends TestCase {
 		assertTrue( l1_1.fastRotation().fastRotation().fastRotation().equals( l1_4 ) );
 		assertFalse( l1_1.equals( l1_4 ) );
 
-	
+
 
 		//using global square Piece.
 		assertTrue( square.equals( pieces[ Piece.SQUARE ] ) );

@@ -15,7 +15,13 @@ public class Board	{
 	private boolean[][] grid;
 	private boolean DEBUG = true;
 	boolean committed;
-	
+
+	//These array are used to
+	private int[] widths;
+	private int[] heights;
+
+	//This is returned upon getMaxHeight() call.
+	private int maxHeight;
 	
 	// Here a few trivial methods are provided:
 	
@@ -28,8 +34,9 @@ public class Board	{
 		this.height = height;
 		grid = new boolean[width][height];
 		committed = true;
-		
-		// YOUR CODE HERE
+
+
+
 	}
 	
 	
