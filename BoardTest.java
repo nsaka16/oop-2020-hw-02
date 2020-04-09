@@ -36,12 +36,18 @@ public class BoardTest extends TestCase {
 	// Check the basic getRowWidth/getColumnHeight/getMaxHeight.
 	public void testSizeOperations() {
 		//At this moment board is empty.
-
 		firstSizeTest();
 		secondSizeTest();
-		//............
+		thirdSizeTest();
 	}
 
+	//Check the dropHeight() method.
+	//Should we check out of bounds drops?
+	public void testDropHeight()
+	{
+		firstDropTest();
+		secondDropTest();
+	}
 	/*
 		Checking  getColumnHeight()/getRowWidth/place()/getMaxHeight() functionality.
 		[Out of bounds, bad, ok ] places are introduced.
@@ -52,27 +58,25 @@ public class BoardTest extends TestCase {
 
 		//Check for all rows/columns to be 0 in an empty Board.
 		for(int i=0; i<b.getWidth(); i++) assertEquals(b.getColumnHeight(i), 0 );
-		for(int i=0; i<b.getHeight(); i++) assertEquals(b.getColumnHeight(i), 0 );
+		for(int i=0; i<b.getHeight(); i++) assertEquals(b.getRowWidth(i), 0 );
 
 		//Check for maxHeight to be zero.
 		assertEquals(b.getMaxHeight(), 0 );
 
 		//Place pyramid on the board.
-		b.place(pyr1,0,0);
+		int result = b.place(pyr1,0,0);
+		b.commit();
 
-		//Check again all rows/columns.
-		assertEquals(1, b.getColumnHeight(0));
-		assertEquals(2, b.getColumnHeight(1));
-		assertEquals(0, b.getColumnHeight(3));
-		assertEquals(2, b.getMaxHeight());
-		assertEquals(3, b.getRowWidth(0));
-		assertEquals(1, b.getRowWidth(1));
-		assertEquals(0, b.getRowWidth(2));
+		//Checking
+		assertEquals( Board.PLACE_OK, result );
+		assertEquals(true, b.getGrid(0,0));
+		assertEquals(true, b.getGrid(1,0));
+		assertEquals(true, b.getGrid(2,0));
+		assertEquals(false, b.getGrid(3,0));
+		assertEquals(true, b.getGrid(1,1));
 
 		//Put rotated s1 figure(s1_2) on (1,1) starting point.
-		Piece s1_2 = s1_1.computeNextRotation();
-		b.commit();
-		int result1 = b.place( s1_2,1,1 );
+		int result1 = b.place( s1_1.computeNextRotation(),1,1 );
 		b.commit();
 
 		//Check rows/columns.
@@ -85,6 +89,7 @@ public class BoardTest extends TestCase {
 		assertEquals( 2, b.getRowWidth(1) );
 		assertEquals( 2, b.getRowWidth(2) );
 		assertEquals( 1, b.getRowWidth(3) );
+		assertEquals( 0, b.getRowWidth(4) );
 
 		//Place square on the board, should be out of bounds.
 		int result2 = b.place( stick1.computeNextRotation(),  2, 3 );
@@ -93,6 +98,7 @@ public class BoardTest extends TestCase {
 		//Check rows/columns.
 		assertEquals( Board.PLACE_OUT_BOUNDS, result2 );	//out of bounds.
 		assertEquals( 4 ,b.getColumnHeight(2) );
+		assertEquals( 4 ,b.getColumnHeight(3) );
 		assertEquals( 4, b.getMaxHeight() );
 		assertEquals(  3 , b.getRowWidth( 3 ));
 
@@ -103,11 +109,11 @@ public class BoardTest extends TestCase {
 		assertEquals( Board.PLACE_BAD, result3 );
 		assertEquals( 4 ,b.getColumnHeight(0) );
 		assertEquals( 4, b.getMaxHeight() );
+		assertEquals( 4 ,b.getRowWidth(3) );
 	}
 
 	/*
-		Checking  height/width/place functionality.
-		[ out of bounds, bad, ok ] places, freeRows() are introduced.
+		Checking  freeRow for adjacent filled rows.
 	 */
 	private void secondSizeTest()
 	{
@@ -161,9 +167,10 @@ public class BoardTest extends TestCase {
 
 		//Check after final stick add.
 		assertEquals( Board.PLACE_ROW_FILLED, res3 );
-		assertEquals( 4, b.getMaxHeight() );
+		assertEquals( 5, b.getMaxHeight() );
+		assertEquals( 5, b.getColumnHeight(1) );
 		assertEquals( 4, b.getColumnHeight(0) );
-		assertEquals( 4, b.getColumnHeight(3) );
+		assertEquals( 4, b.getColumnHeight(2) );
 
 		//Clear rows.
 		int clearedRows = b.clearRows();
@@ -174,12 +181,105 @@ public class BoardTest extends TestCase {
 		assertEquals( 1, b.getMaxHeight() );
 		assertEquals( 0, b.getColumnHeight(0 ) );
 		assertEquals( 0, b.getColumnHeight(2 ) );
+	}
 
+	/*
+		Checking clearRows for not adjacent filled rows.
+	 */
+	private void thirdSizeTest()
+	{
+		b = new Board( 4, 6 );	//Initialising specific test board.
+		int res1 = b.place(pyr1,0,0);
+		b.commit();
+
+		//Should get placed ok.
+		assertEquals( Board.PLACE_OK, res1 );
+
+		int res2 = b.place(pyr1,0,2);
+		b.commit();
+
+		//Should het placed ok.
+		assertEquals( Board.PLACE_OK, res2 );
+		assertEquals( 4, b.getMaxHeight());
+
+		int res3 = b.place(stick1,3,0);
+		//Should we use commit here??
+
+		assertEquals( Board.PLACE_ROW_FILLED, res1 );
+		assertEquals( 4, b.getMaxHeight() );
+
+		int res = b.clearRows();
+		b.commit();
+		assertEquals( 2, res );
+
+		//Check heights/widths after clearing rows.
+		assertEquals(2, b.getColumnHeight(1));
+		assertEquals(0, b.getColumnHeight(2));
+		assertEquals(2, b.getColumnHeight(3));
+		assertEquals(0, b.getColumnHeight(0));
+		assertEquals(2, b.getMaxHeight() );
+
+		//Adding piece fully out of bounds.
+		int resOutOfBounds = b.place( square, 4, 0 );
+		assertEquals( Board.PLACE_OUT_BOUNDS, resOutOfBounds );
 
 	}
 
-	////Should implement dropHeight()....!!!!!!!!!!!!
+	/*
+		First/simple dropHeight() test.
+	 */
+	private void firstDropTest()
+	{
+		b = new Board( 4, 6 );	//Initialising specific test board.
 
+		int h1 = b.dropHeight( pyr1, 0 );	//Dropping on an empty board Should get y == 0.
+		assertEquals(0, h1 );
+
+		int res1 = b.place(pyr1,0,0);	//Now place pyramid on board.
+		b.commit();
+
+		//Checking dropping rotated s2,on two different x coordinates [ 0 , 1 ].
+		int h2 = b.dropHeight(s2_1.computeNextRotation(), 1);
+		assertEquals( 2, h2 );
+		int h3 = b.dropHeight(s2_1.computeNextRotation(), 0);
+		assertEquals( 1, h3 );
+
+		int res2 = b.place( square, 2, 1 );	//Placing square at (2,1).
+
+		int h4 = b.dropHeight( square, 2 );	//Checking dropping square on x==2.
+		assertEquals( 3, h4 );
+	}
+
+	//Checking dropHeight() and introducing getGrid().
+	private void secondDropTest()
+	{
+		b = new Board( 3, 6 );	//Initialising specific test board.
+		int res1 = b.place(pyr1,0,0);	//placing pyramid
+		b.commit();
+
+		assertEquals(Board.PLACE_ROW_FILLED, res1);	//Should return row filled status.
+
+		b.clearRows();	//Clear filled row(0-th row)
+		b.commit();
+
+		//Checking getGrid() method, checking whether cell of the grid is filled.
+		assertEquals( true , b.getGrid(1,0));
+		assertEquals( false , b.getGrid(0,0));
+		assertEquals( false , b.getGrid(2,0));
+
+		//Dropping stick on x=0.
+		int h1 = b.dropHeight(stick1, 0 );
+		assertEquals( 0 , h1 );
+
+		//Dropping square on x=0.
+		int h2 = b.dropHeight(square, 1);
+		assertEquals( 1 , h2 );
+
+		//This is special case when x index is out of bounds.
+		int h3 = b.dropHeight(square, 4);
+		assertEquals(-1, h3);
+
+	}
 
 	
 	// Make  more tests, by putting together longer series of
