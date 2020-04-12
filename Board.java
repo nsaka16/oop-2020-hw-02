@@ -1,5 +1,7 @@
 // Board.java
 
+import java.util.Arrays;
+
 /**
  CS108 Tetris Board.
  Represents a Tetris board -- essentially a 2-d grid
@@ -166,28 +168,36 @@ public class Board	{
 	public int place(Piece piece, int x, int y) {
 		// flag !committed problem
 		if (!committed) throw new RuntimeException("place commit problem");
-			
-		int result = PLACE_OK;
 
+		//Will need to sve memento here.
+		int res = checkBody( piece, x, y );
+		return res;
+	}
+
+	private int checkBody( Piece piece, int x, int y)
+	{
 		TPoint[] body = piece.getBody();	//Body of a passed piece.
+		int result = PLACE_OK;
 		for( TPoint point : body )
 		{
+			int currX = x + point.x;
+			int currY = y + point.y;
 			//If out of bounds.result=appropriate value.
-			if( outOfBounds( x + point.x, y + point.y ) )
+			if( outOfBounds( currX, currY ) )
 			{
 				result = PLACE_OUT_BOUNDS;
 			}
 			//else if x,y in grid=true result=appropriate value.
-			else if( isInvalidPoint( x + point.x, y + point.y ) )
+			else if( isInvalidPoint( currX, currY ) )
 			{
 				result = PLACE_BAD;
 			}
 			//This else means that x,y is valid and in bounds.
 			else {
-				grid[point.x+x][point.y+y] = true;	//set grid point to true.
-				updateWidthsAndHeights( point.x+x, point.y+y );	//update heights,widths.
-				//
-				if( widths[y] == width  )
+				grid[currX][currY] = true;	//set grid point to true.
+				updateWidthsAndHeights( currX, currY );	//update heights,widths.
+				//This widths array is already updated,use new value.
+				if( isRowFilled( y )  )
 				{
 					result = PLACE_ROW_FILLED;
 				}
@@ -195,7 +205,6 @@ public class Board	{
 		}
 		return result;
 	}
-	
 	/*
 		Updating heights and widths arrays with new values.
 		and update maxHeight if needed.
@@ -216,12 +225,42 @@ public class Board	{
 	*/
 	public int clearRows() {
 		int rowsCleared = 0;
-		// YOUR CODE HERE
+		int to = 0;
+		int from = 0;
+
+		for( int i = 0; i < widths.length; i++ )
+		{
+			if( isRowFilled( i ) )
+			{
+
+			}
+		}
+
 		sanityCheck();
 		return rowsCleared;
 	}
 
 
+	//Used to move one value of widths array to another index.
+	private void copyWidthValue( int from, int to )
+	{
+		widths[to] = widths[from];
+	}
+
+	//copy boolean grid's one row to other index.
+	private void copyGridRow( int from, int to )
+	{
+		for( int i = 0; i < width; i++ )
+		{
+			grid[i][to] = grid[i][from];
+		}
+	}
+
+	//returns true if array  y'th row is filled.
+	private boolean isRowFilled( int y )
+	{
+		return widths[y] == width;
+	}
 
 	/**
 	 Reverts the board to its state before up to one place
