@@ -38,8 +38,8 @@ public class BoardTest extends TestCase {
 	public void testSizeOperations() {
 		sizeTest0();
 		sizeTest1();
-		//sizeTest2();
-		//sizeTest3();
+		sizeTest2();
+		sizeTest3();
 	}
 
 	//Check the dropHeight() method.
@@ -187,22 +187,20 @@ public class BoardTest extends TestCase {
 		//Placing stick at (0,0).
 		int res2 = b.place( stick1, 0 , 0 );
 		b.commit();
-
 		//Check after first stick add.
 		assertEquals( Board.PLACE_OK, res2 );
 		assertEquals( 4, b.getMaxHeight() );
 		assertEquals( 4, b.getColumnHeight(0) );
-		assertEquals( 0, b.getColumnHeight(3) );
+		assertEquals( 0, b.getColumnHeight(2) );
 
 		//Placing stick at (2,0).
 		int res3 = b.place(stick1 , 2, 0);
 		b.commit();
-
 		//Check after second stick add.
-		assertEquals( Board.PLACE_OK, res3 );
+		assertEquals( Board.PLACE_ROW_FILLED, res3 );
 		assertEquals( 4, b.getMaxHeight() );
 		assertEquals( 4, b.getColumnHeight(0) );
-		assertEquals( 4, b.getColumnHeight(3) );
+		assertEquals( 4, b.getColumnHeight(2) );
 
 	}
 
@@ -212,7 +210,7 @@ public class BoardTest extends TestCase {
 		//Placing stick at (1,1).
 		int res4 = b.place(stick1, 1 ,1);
 		b.commit();
-
+		System.out.println(b.toString());
 		//Check after final stick add.
 		assertEquals( Board.PLACE_ROW_FILLED, res4 );
 		assertEquals( 5, b.getMaxHeight() );
@@ -223,7 +221,7 @@ public class BoardTest extends TestCase {
 		//Clear rows.
 		int clearedRows = b.clearRows();
 		b.commit();
-
+		System.out.println(b.toString());
 		//Checking after clearing rows.
 		assertEquals( 4, clearedRows );
 		assertEquals( 1, b.getMaxHeight() );
@@ -274,7 +272,6 @@ public class BoardTest extends TestCase {
 		int res = b.clearRows();
 		b.commit();
 		assertEquals( 2, res );
-
 		//Check heights/widths after clearing rows.
 		assertEquals(2, b.getColumnHeight(1));
 		assertEquals(0, b.getColumnHeight(2));

@@ -225,35 +225,51 @@ public class Board	{
 	*/
 	public int clearRows() {
 		int rowsCleared = 0;
-		int to = 0;
-		int from = 0;
-
-		for( int i = 0; i < widths.length; i++ )
+		int start = getLowerFilledIndex();
+		if( start == -1 ) return 0;
+		for( int to = start; to < height - 1; to++ )
 		{
-			if( isRowFilled( i ) )
+			if( isRowFilled(to) )
 			{
-
+				moveGraphDown(to);
+				decreaseHeight();
+				rowsCleared++;
+				to--;
 			}
 		}
-
 		sanityCheck();
 		return rowsCleared;
 	}
 
-
-	//Used to move one value of widths array to another index.
-	private void copyWidthValue( int from, int to )
+	private void moveGraphDown( int to )
 	{
-		widths[to] = widths[from];
+		for( int from = to + 1; from < height; from ++ )
+		{
+			copyGridRow( from - 1 ,from );
+			copyWidthValue( from-1, from  );
+		}
+	}
+	private void decreaseHeight()
+	{
+		maxHeight--;
+		for( int i=0; i < width; i++ )
+		{
+			heights[i]--;
+		}
 	}
 
-	//copy boolean grid's one row to other index.
-	private void copyGridRow( int from, int to )
+	private void copyGridRow( int to, int from )
 	{
-		for( int i = 0; i < width; i++ )
+		for( int i=0; i < width; i++ )
 		{
 			grid[i][to] = grid[i][from];
 		}
+	}
+
+	//Used to move one value of widths array to another index.
+	private void copyWidthValue( int to, int from )
+	{
+		widths[to] = widths[from];
 	}
 
 	//returns true if array  y'th row is filled.
@@ -262,6 +278,14 @@ public class Board	{
 		return widths[y] == width;
 	}
 
+	private int getLowerFilledIndex()
+	{
+		for( int i = 0; i < height; i++ )
+		{
+			if( isRowFilled( i ) ) return i;
+		}
+		return -1;
+	}
 	/**
 	 Reverts the board to its state before up to one place
 	 and one clearRows();
