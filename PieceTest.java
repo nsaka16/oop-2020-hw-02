@@ -26,8 +26,6 @@ public class PieceTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-
-
 		/*
 			!Attention! remember that method fastRotation() is only used for pieces[] array.
 		 */
@@ -110,13 +108,26 @@ public class PieceTest extends TestCase {
 	 */
 	public void testFastRotateEquals()
 	{
+		s1FastRotateTest();
+		l1FastRotateTest();
+		squareFastRotateTest();
+		stickFastRotateTest();
+		pyrFastRotateTest();
+
+	}
+
+	private void s1FastRotateTest()
+	{
 		//using global S Piece.
 		assertTrue( s1_1.equals( s1_1.computeNextRotation().computeNextRotation() )  );	//S - figure's second rotation == original one.
 		assertTrue( s1_1.computeNextRotation().equals( pieces[ Piece.S1 ].fastRotation() ) );	//	*pieces contains first rotations.
 		assertTrue( s1_1.equals( s1_1 ) );
 		assertFalse( s1_1.equals( s1_1.computeNextRotation() ) );
 		assertFalse( s1_1.equals(null) );
+	}
 
+	private void l1FastRotateTest()
+	{
 		//Creating local l1 Piece.
 		Piece l1_1 = pieces[ Piece.L1 ];
 		Piece l1_2 = l1_1.fastRotation();
@@ -130,22 +141,28 @@ public class PieceTest extends TestCase {
 		assertTrue( l1_3.equals( pieces[ Piece.L1 ].fastRotation().fastRotation() ) );
 		assertTrue( l1_1.fastRotation().fastRotation().fastRotation().equals( l1_4 ) );
 		assertFalse( l1_1.equals( l1_4 ) );
+	}
 
-
-
+	private void squareFastRotateTest()
+	{
 		//using global square Piece.
 		assertTrue( square.equals( pieces[ Piece.SQUARE ] ) );
 		assertTrue( square.equals( square.computeNextRotation() ) );
 		assertTrue( square.equals( square.computeNextRotation().computeNextRotation() ) );
 		assertTrue( square.equals( square ) );
+	}
 
+	private void stickFastRotateTest()
+	{
 		//using global stick1,stick2 Pieces.
 		assertTrue( stick1.equals( pieces[ Piece.STICK ].fastRotation().fastRotation() ) );
 		assertTrue( stick1.equals( stick1.computeNextRotation().computeNextRotation() ));
 		assertFalse( stick2.equals( stick1 ) );
 		assertTrue( stick2.equals( pieces[ Piece.STICK ].fastRotation() ));
+	}
 
-
+	private void pyrFastRotateTest()
+	{
 		//using global pyramids Pieces.
 		assertTrue( pyr4.fastRotation().equals( pyr1 ) );
 		assertTrue( pyr1.fastRotation().fastRotation().fastRotation().fastRotation().equals( pyr1 ) );
@@ -208,6 +225,12 @@ public class PieceTest extends TestCase {
 	 */
 	public void lSizeTest()
 	{
+		l1SizeTests();
+		l2SizeTests();
+	}
+
+	private void l1SizeTests()
+	{
 		//Creating local l1 Piece.
 		Piece l1_1 = pieces[ Piece.L1 ];
 		Piece l1_2 = l1_1.fastRotation();
@@ -233,8 +256,10 @@ public class PieceTest extends TestCase {
 		assertEquals( 3, l1_4.getWidth() );
 		assertEquals( 2, l1_4.getHeight() );
 		assertEquals( l1_1.getWidth(), l1_4.fastRotation().getWidth() );
+	}
 
-
+	private void l2SizeTests()
+	{
 		//Creating local l2 Piece.
 		Piece l2_1 = pieces[ Piece.L2 ];
 		Piece l2_2 = l2_1.fastRotation();
@@ -261,14 +286,18 @@ public class PieceTest extends TestCase {
 		assertEquals( 2, l2_4.getHeight() );
 		assertEquals( l2_1.getWidth(), l2_4.fastRotation().getWidth() );
 	}
-
 	/*
 		This function checks S's(both S1,S2) width/height correctness.
 	 */
 	private void sSizeTest()
 	{
 		//using global s variables.
+		s1SizeTest();
+		s2SizeTest();
+	}
 
+	private void s1SizeTest()
+	{
 		//original s1.
 		assertEquals( 3, s1_1.getWidth() );
 		assertEquals( 2, s1_1.getHeight() );
@@ -282,8 +311,10 @@ public class PieceTest extends TestCase {
 		//second/third time rotated s1.
 		assertEquals( s1_2.computeNextRotation().getWidth(), s1_1.getWidth() );
 		assertEquals( s1_2.computeNextRotation().computeNextRotation().getWidth(), s1_2.getWidth() );
+	}
 
-
+	private void s2SizeTest()
+	{
 		//original s2.
 		assertEquals( 3, s2_1.getWidth() );
 		assertEquals( 2, s2_1.getHeight() );
@@ -346,24 +377,30 @@ public class PieceTest extends TestCase {
 	 */
 	public void lSkirt()
 	{
+		l1Skirt();
+		l2Skirt();
+	}
+
+	private void l1Skirt()
+	{
 		//getting L1 variable, from pieces array.
 		Piece l1_1 = pieces[ Piece.L1 ];	//array has 1'st rotations in it.
-		Piece l1_2 = l1_1.fastRotation();
-		Piece l1_3 = l1_2.fastRotation();
-		Piece l1_4 = l1_3.fastRotation();
 
 		//original L1.
 		assertTrue(Arrays.equals(new int[] { 0 , 0 }, l1_1.getSkirt()));
 
 		//first rotation of L1.
-		assertTrue(Arrays.equals(new int[] { 0 , 0 ,0 }, l1_2.getSkirt()));
+		assertTrue(Arrays.equals(new int[] { 0 , 0 ,0 }, l1_1.fastRotation().getSkirt()));
 
 		//second rotation of L1.
-		assertTrue(Arrays.equals(new int[] { 2 , 0 }, l1_3.getSkirt()));
+		assertTrue(Arrays.equals(new int[] { 2 , 0 }, l1_1.fastRotation().fastRotation().getSkirt()));
 
 		//third rotation of L1.
-		assertTrue(Arrays.equals(new int[] { 0 , 1, 1 }, l1_4.getSkirt()));
+		assertTrue(Arrays.equals(new int[] { 0 , 1, 1 }, l1_1.fastRotation().fastRotation().fastRotation().getSkirt()));
+	}
 
+	private void l2Skirt()
+	{
 		//getting L2 variable, from pieces array.
 		Piece l2_1 = pieces[ Piece.L2 ];	//array has 1'st rotations in it.
 
