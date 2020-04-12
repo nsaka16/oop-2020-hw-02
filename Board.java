@@ -225,30 +225,36 @@ public class Board	{
 	*/
 	public int clearRows() {
 		int rowsCleared = 0;
-		int start = getLowerFilledIndex();
+		int start = getLowerFilledIndex();	//find lowest filled row.
 		if( start == -1 ) return 0;
 		for( int to = start; to < height - 1; to++ )
 		{
+			//Only do process for filled rows.
 			if( isRowFilled(to) )
 			{
-				moveGraphDown(to);
-				decreaseHeight();
+				moveGraphDown(to);	//Move everything upper than filled row one row down.
+				decreaseHeight();	//for every filled row decrease all heights.
 				rowsCleared++;
-				to--;
+				to--;	//This is needed, as two filled rows can be adjacent.
 			}
 		}
 		sanityCheck();
 		return rowsCleared;
 	}
 
+	/*
+		Copy  every row upper than passed row one row down.
+	 */
 	private void moveGraphDown( int to )
 	{
 		for( int from = to + 1; from < height; from ++ )
 		{
-			copyGridRow( from - 1 ,from );
-			copyWidthValue( from-1, from  );
+			copyGridRow( from - 1 ,from );	//Should move grid down.
+			copyWidthValue( from-1, from  );	//Should move widths down.
 		}
 	}
+
+	//Decrease all heights in heights array.
 	private void decreaseHeight()
 	{
 		maxHeight--;
@@ -258,6 +264,7 @@ public class Board	{
 		}
 	}
 
+	//Copies row from into row to of grid.
 	private void copyGridRow( int to, int from )
 	{
 		for( int i=0; i < width; i++ )
@@ -278,6 +285,8 @@ public class Board	{
 		return widths[y] == width;
 	}
 
+	//Find lowest index of filled row,
+	//-1 returned if no filled rows found.
 	private int getLowerFilledIndex()
 	{
 		for( int i = 0; i < height; i++ )

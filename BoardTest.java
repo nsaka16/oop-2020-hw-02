@@ -94,6 +94,7 @@ public class BoardTest extends TestCase {
 		//Place pyramid on the board.
 		int result = b.place(pyr1,0,0);
 		b.commit();
+		b.clearRows();	//This should change nothing.
 		//Checking
 		assertEquals( Board.PLACE_OK, result );
 		assertEquals(true, b.getGrid(0,0));
@@ -210,7 +211,6 @@ public class BoardTest extends TestCase {
 		//Placing stick at (1,1).
 		int res4 = b.place(stick1, 1 ,1);
 		b.commit();
-		System.out.println(b.toString());
 		//Check after final stick add.
 		assertEquals( Board.PLACE_ROW_FILLED, res4 );
 		assertEquals( 5, b.getMaxHeight() );
@@ -221,7 +221,6 @@ public class BoardTest extends TestCase {
 		//Clear rows.
 		int clearedRows = b.clearRows();
 		b.commit();
-		System.out.println(b.toString());
 		//Checking after clearing rows.
 		assertEquals( 4, clearedRows );
 		assertEquals( 1, b.getMaxHeight() );
