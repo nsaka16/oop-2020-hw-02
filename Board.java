@@ -16,7 +16,7 @@ public class Board	{
 	private boolean DEBUG = true;
 	boolean committed;
 
-	//These array are used to
+	//These array are used to store filled spots in columns/rows.
 	private int[] widths;
 	private int[] heights;
 
@@ -33,10 +33,10 @@ public class Board	{
 		this.width = width;
 		this.height = height;
 		grid = new boolean[width][height];
-		committed = true;
-
-
-
+		committed = true;	//Should be committed at the start.
+		widths = new int [ height ];	//initializing widths,heights array.
+		heights = new int [ width ];
+		maxHeight =  0 ;	//Setting max height to zero.
 	}
 	
 	
@@ -61,7 +61,7 @@ public class Board	{
 	 For an empty board this is 0.
 	*/
 	public int getMaxHeight() {	 
-		return 0; // YOUR CODE HERE
+		return maxHeight;
 	}
 	
 	
@@ -95,7 +95,7 @@ public class Board	{
 	 The height is 0 if the column contains no blocks.
 	*/
 	public int getColumnHeight(int x) {
-		return 0; // YOUR CODE HERE
+		return heights[x];
 	}
 	
 	
@@ -104,7 +104,7 @@ public class Board	{
 	 the given row.
 	*/
 	public int getRowWidth(int y) {
-		 return 0; // YOUR CODE HERE
+		 return widths[y];
 	}
 	
 	
@@ -114,10 +114,36 @@ public class Board	{
 	 always return true.
 	*/
 	public boolean getGrid(int x, int y) {
-		return false; // YOUR CODE HERE
+		if( outOfBounds( x, y ) ) return true;
+		else return grid[x][y];
 	}
-	
-	
+
+	//Returns true if x,y is out of bounds.
+	private boolean outOfBounds( int x, int y )
+	{
+		return ! xInBounds( x ) || ! yInBounds( y );
+	}
+
+	//Checkng x bounds.
+	private boolean xInBounds( int x )
+	{
+		return x >= 0 && x < width;
+	}
+
+	//Checking y bounds.
+	private boolean yInBounds( int y )
+	{
+		return y >= 0 && y < height;
+	}
+
+	//returns false if grid[x][y] is already filled,
+	//meaning if grd[x][y] is already true.
+	private boolean isInvalidPoint( int x, int y )
+	{
+		return grid[x][y];
+	}
+
+
 	public static final int PLACE_OK = 0;
 	public static final int PLACE_ROW_FILLED = 1;
 	public static final int PLACE_OUT_BOUNDS = 2;
@@ -142,13 +168,48 @@ public class Board	{
 		if (!committed) throw new RuntimeException("place commit problem");
 			
 		int result = PLACE_OK;
-		
-		// YOUR CODE HERE
-		
+
+		TPoint[] body = piece.getBody();	//Body of a passed piece.
+		for( TPoint point : body )
+		{
+			//If out of bounds.result=appropriate value.
+			if( outOfBounds( x + point.x, y + point.y ) )
+			{
+				result = PLACE_OUT_BOUNDS;
+			}
+			//else if x,y in grid=true result=appropriate value.
+			else if( isInvalidPoint( x + point.x, y + point.y ) )
+			{
+				result = PLACE_BAD;
+			}
+			//This else means that x,y is valid and in bounds.
+			else {
+				grid[point.x+x][point.y+y] = true;	//set grid point to true.
+				updateWidthsAndHeights( point.x+x, point.y+y );	//update heights,widths.
+				//
+				if( widths[y] == width  )
+				{
+					result = PLACE_ROW_FILLED;
+				}
+			}
+		}
 		return result;
 	}
 	
-	
+	/*
+		Updating heights and widths arrays with new values.
+		and update maxHeight if needed.
+	 */
+	private void updateWidthsAndHeights( int x, int y )
+	{
+		//if increment heights[x] is bigger then max, set it to be max height.
+		if( ++heights[x] > getMaxHeight() )
+		{
+			maxHeight = heights[x];
+		}
+		widths[y]++;
+	}
+
 	/**
 	 Deletes rows that are filled all the way across, moving
 	 things above down. Returns the number of rows cleared.
