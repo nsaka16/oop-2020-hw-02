@@ -34,7 +34,12 @@ public class BoardTest extends TestCase {
 		square = new Piece( Piece.SQUARE_STR );
 	}
 	
-	// Check the basic getRowWidth/getColumnHeight/getMaxHeight.
+	/*
+		Methods checked: [ getRowWidth(), getColumnHeight() , getMaxHeight(), clearRow(), getGrid(),place() ].
+		Methods Naming in sizeTest-s: %_OK_% - adds figures ok,
+					    %_OutOfBounds_% adds figures out of bounds,
+					    %_Bad_% adds figures badly.
+	 */
 	public void testSizeOperations() {
 		sizeTest0();
 		sizeTest1();
@@ -42,25 +47,35 @@ public class BoardTest extends TestCase {
 		sizeTest3();
 	}
 
-	//Checking getWidth, getHeight of board.
+	//Size test lvl.: 0
+	//Checked Methods: { getWidth(), getHeight(), getGrid() }
 	private void sizeTest0()
 	{
 		b = new Board(3,4);
 		assertEquals(3, b.getWidth() );
 		assertEquals( 4 , b.getHeight() );
+		//Now Checking that board's empty.
+		for(int x=0; x< b.getWidth(); x++)
+		{
+			for(int y=0; y<b.getHeight(); y++)
+			{
+				assertEquals(false, b.getGrid(x,y));
+			}
+		}
 	}
 
+	//Size test lvl.: 1
 	private void sizeTest1()
 	{
-		b = new Board(4, 6);	//Initialising specific test board.
-		preCheck_sizeTest1();	//Checking before placing anything.
-		placePyramid_OK_sizeTest1();	//Placing pyramid at (0,0) and checking.
-		placeS1_OK_sizeTest1();	//After pyramid, placing s1 figure at (1,1) and checking.
-		placeStick_OutOfBounds_sizeTest1();	//Now placing stick at (2,3).
-		placeStick2_Bad_sizeTest1();	//Now placing again stick but at (0,0)
+		b = new Board(4, 6);
+		preCheck_sizeTest1();
+		placePyramid_OK_sizeTest1();
+		placeS1_OK_sizeTest1();
+		placeStick_OutOfBounds_sizeTest1();
+		placeStick2_Bad_sizeTest1();
 	}
 
-	//Checking board before placing anything.
+	//sizeTest1 -> Emptiness Check before adding figures.
 	private void preCheck_sizeTest1()
 	{
 		//Check for all rows/columns to be 0 in an empty Board.
@@ -70,14 +85,12 @@ public class BoardTest extends TestCase {
 		assertEquals(b.getMaxHeight(), 0 );
 	}
 
-	//Place pyramid on board and check.
+	//sizeTest1 -> Placing(OK) and Checking pyramid at (0,0).
 	private void placePyramid_OK_sizeTest1()
 	{
-		//Place pyramid on the board.
 		int result = b.place(pyr1,0,0);
 		b.commit();
 		b.clearRows();	//This should change nothing.
-		//Checking
 		assertEquals( Board.PLACE_OK, result );
 		assertEquals( 1, b.getColumnHeight( 0 ) );
 		assertEquals(true, b.getGrid(0,0));
@@ -87,14 +100,13 @@ public class BoardTest extends TestCase {
 		assertEquals(true, b.getGrid(1,1));
 	}
 
-	//Place s1 on board and check.
+	//sizeTest1 -> Placing(OK) and Checking s1_2 at (1,1).
 	private void placeS1_OK_sizeTest1()
 	{
-		//Put rotated s1 figure(s1_2) on (1,1) starting point.
+		//s1_1.computeNextRotation() == s1_2
 		int result1 = b.place( s1_1.computeNextRotation(),1,1 );
 		b.commit();
-		//Check rows/columns.
-		assertEquals(Board.PLACE_OK, result1);	//Should have added OK.
+		assertEquals(Board.PLACE_OK, result1);
 		assertEquals( 1, b.getColumnHeight( 0 ) );
 		assertEquals( 3, b.getColumnHeight( 2 ) );
 		assertEquals( 4, b.getMaxHeight());
@@ -103,59 +115,48 @@ public class BoardTest extends TestCase {
 		assertEquals( 0, b.getRowWidth(4) );
 	}
 
-	//Place stick on board and check.
+	//sizeTest1 -> Placing(OutOfBounds) and Checking stick2 at (2,3).
 	private void placeStick_OutOfBounds_sizeTest1()
 	{
-		//Place square on the board, should be out of bounds.
+		//stick1.computeNextRotation() == stick2
 		int result2 = b.place( stick1.computeNextRotation(),  2, 3 );
 		b.commit();
-		//Check rows/columns.
-		assertEquals( Board.PLACE_OUT_BOUNDS, result2 );	//out of bounds.
+		assertEquals( Board.PLACE_OUT_BOUNDS, result2 );
 		assertEquals( 4 ,b.getColumnHeight(2) );
 		assertEquals( 4, b.getMaxHeight() );
 		assertEquals(  3 , b.getRowWidth( 3 ));
 	}
 
-	//Place another stick on board and test.
+	//sizeTest1 -> Placing(BAD) and Checking stick1 at (0,0).
 	private void placeStick2_Bad_sizeTest1()
 	{
-		//Place stick on the board, should overlap other figure.
 		int result3 = b.place( stick1, 0, 0 );
 		b.commit();
-		//Check rows/columns.
 		assertEquals( Board.PLACE_BAD, result3 );
 		assertEquals( 4, b.getMaxHeight() );
 		assertEquals( 4 ,b.getColumnHeight(0) );
 	}
 
-	/*
-		Checking  freeRow for adjacent filled rows.
-	 */
+	//Size test lvl.: 2
 	private void sizeTest2()
 	{
-		b = new Board( 3, 6 );	//Initialising specific test board.
-		placeFigures_RowFilled_sizeTest2();	//Placing figure(s) and using clear rows.
-		placeMoreFigures_OK_sizeTest2();	//Just placing more figures.
-		placeFigures_RowFilled2_sizeTest2();	//Placing even more figures and using clear rows.
+		b = new Board( 3, 6 );
+		placeFigures_RowFilled_sizeTest2();
+		placeStick_OK_sizeTest2();
+		placeStick_RowsFilled_sizeTest2();
+		placeFigures_RowFilled2_sizeTest2();
 	}
 
-	//Place fig. and clear rows.
+	//sizeTest2 -> Placing(Row_Filled) and Checking pyramid1 at (0,0).
 	private void placeFigures_RowFilled_sizeTest2()
 	{
-		//Place pyramid on he board.
 		int result1 = b.place( pyr1,0,0);
 		b.commit();
-
-		//Check rows/columns.
 		assertEquals( Board.PLACE_ROW_FILLED, result1 );
 		assertEquals( 3, b.getRowWidth( 0 ) );
 		assertEquals( 1, b.getRowWidth( 1 ) );
-
-		//Clear filled rows.
-		int rowsCleared = b.clearRows();
+		int rowsCleared = b.clearRows();	//clearing rows.
 		b.commit();
-
-		//Check changes after clearing Rows.
 		assertEquals( 1 , rowsCleared );
 		assertEquals( 1, b.getRowWidth( 0 ) );
 		assertEquals( 0, b.getRowWidth( 1 ) );
@@ -164,23 +165,22 @@ public class BoardTest extends TestCase {
 		assertEquals( 1, b.getMaxHeight() );
 	}
 
-	//Placing several figures on board.
-	//Nothing too fancy.
-	private void placeMoreFigures_OK_sizeTest2()
+	//sizeTest2 -> Placing(OK) and Checking stick1 at (0,0).
+	private void placeStick_OK_sizeTest2()
 	{
-		//Placing stick at (0,0).
 		int res2 = b.place( stick1, 0 , 0 );
 		b.commit();
-		//Check after first stick add.
 		assertEquals( Board.PLACE_OK, res2 );
 		assertEquals( 4, b.getMaxHeight() );
 		assertEquals( 4, b.getColumnHeight(0) );
 		assertEquals( 0, b.getColumnHeight(2) );
+	}
 
-		//Placing stick at (2,0).
+	//sizeTest2 -> Placing(Row_Filled) and Checking stick1 (2,0).
+	private void placeStick_RowsFilled_sizeTest2()
+	{
 		int res3 = b.place(stick1 , 2, 0);
 		b.commit();
-		//Check after second stick add.
 		assertEquals( Board.PLACE_ROW_FILLED, res3 );
 		assertEquals( 4, b.getMaxHeight() );
 		assertEquals( 4, b.getColumnHeight(0) );
@@ -188,71 +188,54 @@ public class BoardTest extends TestCase {
 
 	}
 
-	//Place some figures and clear rows.
+	//sizeTest2 -> Placing(Row_Filled) and Checking stick1 (1,1).
 	private void placeFigures_RowFilled2_sizeTest2()
 	{
-		//Placing stick at (1,1).
 		int res4 = b.place(stick1, 1 ,1);
 		b.commit();
-		//Check after final stick add.
 		assertEquals( Board.PLACE_ROW_FILLED, res4 );
 		assertEquals( 5, b.getMaxHeight() );
 		assertEquals( 5, b.getColumnHeight(1) );
 		assertEquals( 4, b.getColumnHeight(0) );
 		assertEquals( 4, b.getColumnHeight(2) );
-
-		//Clear rows.
-		int clearedRows = b.clearRows();
+		int clearedRows = b.clearRows();	//Clearing rows.
 		b.commit();
-		//Checking after clearing rows.
 		assertEquals( 4, clearedRows );
 		assertEquals( 1, b.getMaxHeight() );
 		assertEquals( 0, b.getColumnHeight(0 ) );
 		assertEquals( 0, b.getColumnHeight(2 ) );
 	}
 
-	/*
-		Checking clearRows for not adjacent filled rows.
-	 */
+	//Size test lvl.: 3
 	private void sizeTest3()
 	{
-		b = new Board( 4, 6 );	//Initialising specific test board.
-		placeFigures_OK_sizeTest3();	//Placing
+		b = new Board( 4, 6 );
+		placeFigures_OK_sizeTest3();
 		placeFigures_RowFilled_sizeTest3();
 		placeFigures_OutOfBounds_sizeTest3();
 	}
 
-	//Placing pyramid at (0,0) - OK
-	//Placing pyramid at (0,2) - OK
-	//Placing Stick at (3,0) - Place_ROW_Filled
+	//sizeTest3 -> Placing(OK) and Checking pyr (0,0) and (0,2).
 	private void placeFigures_OK_sizeTest3()
 	{
 		int res1 = b.place(pyr1,0,0);
 		b.commit();
-		//Should get placed ok.
 		assertEquals( Board.PLACE_OK, res1 );
-
 		int res2 = b.place(pyr1,0,2);
 		b.commit();
-
-		//Should het placed ok.
 		assertEquals( Board.PLACE_OK, res2 );
 		assertEquals( 4, b.getMaxHeight());
 	}
 
-	//Clearing rows.
-	//Checking correctness of 'cleared' board.
+	//sizeTest3 -> Placing(Row_Filled) and Checking stick1 (3,0).
 	private void placeFigures_RowFilled_sizeTest3()
 	{
 		int res3 = b.place(stick1,3,0);
-		//Should we use commit here??
 		assertEquals( Board.PLACE_ROW_FILLED, res3 );
 		assertEquals( 4, b.getMaxHeight() );
-
 		int res = b.clearRows();
 		b.commit();
 		assertEquals( 2, res );
-		//Check heights/widths after clearing rows.
 		assertEquals(2, b.getColumnHeight(1));
 		assertEquals(0, b.getColumnHeight(2));
 		assertEquals(2, b.getColumnHeight(3));
@@ -260,7 +243,7 @@ public class BoardTest extends TestCase {
 		assertEquals(2, b.getMaxHeight() );
 	}
 
-	//Adding Piece out of bounds.
+	//sizeTest3 -> Placing(Out_Of_Bounds) and Checking square (4,0).
 	private void placeFigures_OutOfBounds_sizeTest3()
 	{
 		//Adding piece fully out of bounds.
@@ -268,9 +251,7 @@ public class BoardTest extends TestCase {
 		assertEquals( Board.PLACE_OUT_BOUNDS, resOutOfBounds );
 	}
 
-	//Check the dropHeight() method.
-	//Should we check out of bounds drops?
-	//Drop test on filled tetris board????????????????
+
 	public void testDropHeight()
 	{
 		dropTest1();
