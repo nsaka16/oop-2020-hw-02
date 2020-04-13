@@ -251,7 +251,7 @@ public class BoardTest extends TestCase {
 		assertEquals( Board.PLACE_OUT_BOUNDS, resOutOfBounds );
 	}
 
-
+	//Methods checked: [ dropHeight(),getRowWidth(), getColumnHeight() , getMaxHeight(), clearRow(), getGrid(), place() ].
 	public void testDropHeight()
 	{
 		dropTest1();
@@ -259,28 +259,30 @@ public class BoardTest extends TestCase {
 		dropTest3();
 	}
 
+	//Drop test lvl.: 1
 	private void dropTest1()
 	{
-		//Initialising specific test board.
 		b = new Board( 4, 6 );
 		dropOnEmptyBoard_test1();
-		int res1 = b.place(pyr1,0,0);	//Now place pyramid on board.
+		int res1 = b.place(pyr1,0,0);
 		b.commit();
 		dropOnFigures1_test1();
-		int res2 = b.place( square, 2, 1 );	//Placing square at (2,1).
+		int res2 = b.place( square, 2, 1 );
 		dropOnFigures2_test1();
 	}
 
+	//DropTest1 -> Dropping and checking pyr1.
+	//Entering this method Board has [nothing] in it.
 	private void dropOnEmptyBoard_test1()
 	{
-		//Dropping on an empty board Should get y == 0.
 		int h1 = b.dropHeight( pyr1, 0 );
 		assertEquals(0, h1 );
 	}
 
+	//DropTest1 -> Dropping and checking s2_1,s2_2.
+	//Entering this method Board has [ pyr1(0,0) ] in it.
 	private void dropOnFigures1_test1()
 	{
-		//Checking dropping rotated s2,on two different x coordinates  0 , 1.
 		int h1 = b.dropHeight(s2_1.computeNextRotation(), 1);
 		assertEquals( 2, h1 );
 		int h2 = b.dropHeight(s2_1.computeNextRotation(), 0);
@@ -289,49 +291,52 @@ public class BoardTest extends TestCase {
 		assertEquals(1 , h3);
 	}
 
+	//DropTest1 -> Dropping and checking s2_1,s2_2.
+	//Entering this method Board has [ pyr1(0,0) ,square(2,1) ] in it.
 	private void dropOnFigures2_test1()
 	{
-		int h4 = b.dropHeight( square, 2 );	//Checking dropping square on x==2.
-		int h5 = b.dropHeight( square, 1 );	//Checking dropping square on x==1.
+		int h4 = b.dropHeight( square, 2 );
+		int h5 = b.dropHeight( square, 1 );
 		assertEquals( 3, h4 );
 		assertEquals(3 , h5);
 	}
 
-	//Check drop height with clearRows().
+	//Drop test lvl.: 2
 	private void dropTest2()
 	{
-		b = new Board( 3, 5 );	//Initialising specific test board.
+		b = new Board( 3, 5 );
 		placeFigures_DropTest2();
 		dropOnFigures1_DropTest2();
 	}
 
+	//DropTest2 -> Placing and checking pyr1.
+	//Entering this method Board has [ ] in it.
 	private void placeFigures_DropTest2()
 	{
-		int res1 = b.place(pyr1,0,0);	//placing pyramid
+		int res1 = b.place(pyr1,0,0);
 		b.commit();
-		assertEquals(Board.PLACE_ROW_FILLED, res1);	//Should return row filled status.
-		b.clearRows();	//Clear filled row(0-th row)
+		assertEquals(Board.PLACE_ROW_FILLED, res1);
+		b.clearRows();
 		b.commit();
-		//Checking whether cells of the grid are filled.
 		assertEquals( true , b.getGrid(1,0));
 		assertEquals( false , b.getGrid(0,0));
 		assertEquals( false , b.getGrid(2,0));
 	}
 
+
+	//DropTest2 -> Dropping and checking stick1,square.
+	//Entering this method Board has [ true(filled) at (1,0) ] in it.
 	private void dropOnFigures1_DropTest2()
 	{
-		//Dropping stick on x=0.
 		int h1 = b.dropHeight(stick1, 0 );
 		assertEquals( 0 , h1 );
-		//Dropping square on x=0.
 		int h2 = b.dropHeight(square, 1);
 		assertEquals( 1 , h2 );
-		//This is special case when x index is out of bounds.
 		int h3 = b.dropHeight(square, 4);
 		assertEquals(-1, h3);
 	}
 
-	//Drop on nearly filled board, it should get error.
+	//Drop test lvl.: 3
 	private void dropTest3()
 	{
 		b = new Board(3, 6);
