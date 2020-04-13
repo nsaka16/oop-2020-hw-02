@@ -87,10 +87,13 @@ public class Board	{
 	 to compute this fast -- O(skirt length).
 	*/
 	public int dropHeight(Piece piece, int x) {
-		return 0; // YOUR CODE HERE
+		if( !xInBounds(x) || piece == null ) return -1;
+		else {
+
+		}
+		return -1;
 	}
-	
-	
+
 	/**
 	 Returns the height of the given column --
 	 i.e. the y value of the highest block + 1.
@@ -138,8 +141,7 @@ public class Board	{
 		return y >= 0 && y < height;
 	}
 
-	//returns false if grid[x][y] is already filled,
-	//meaning if grd[x][y] is already true.
+	//returns true if grid[x][y] is already filled.
 	private boolean isInvalidPoint( int x, int y )
 	{
 		return grid[x][y];
@@ -176,27 +178,23 @@ public class Board	{
 
 	private int checkBody( Piece piece, int x, int y)
 	{
-		TPoint[] body = piece.getBody();	//Body of a passed piece.
+		TPoint[] body = piece.getBody();
 		int result = PLACE_OK;
 		for( TPoint point : body )
 		{
 			int currX = x + point.x;
 			int currY = y + point.y;
-			//If out of bounds.result=appropriate value.
 			if( outOfBounds( currX, currY ) )
 			{
 				result = PLACE_OUT_BOUNDS;
 			}
-			//else if x,y in grid=true result=appropriate value.
 			else if( isInvalidPoint( currX, currY ) )
 			{
 				result = PLACE_BAD;
 			}
-			//This else means that x,y is valid and in bounds.
 			else {
-				grid[currX][currY] = true;	//set grid point to true.
-				updateWidthsAndHeights( currX, currY );	//update heights,widths.
-				//This widths array is already updated,use new value.
+				grid[currX][currY] = true;
+				updateWidthsAndHeights( currX, currY );
 				if( isRowFilled( y )  )
 				{
 					result = PLACE_ROW_FILLED;
@@ -211,8 +209,9 @@ public class Board	{
 	 */
 	private void updateWidthsAndHeights( int x, int y )
 	{
+		if( y+1 > heights[x] ) heights[x] = y + 1;
 		//if increment heights[x] is bigger then max, set it to be max height.
-		if( ++heights[x] > getMaxHeight() )
+		if( heights[x] > getMaxHeight() )
 		{
 			maxHeight = heights[x];
 		}
@@ -260,8 +259,22 @@ public class Board	{
 		maxHeight--;
 		for( int i=0; i < width; i++ )
 		{
-			heights[i]--;
+			heights[i] = previousHeight(i);
 		}
+	}
+
+	private int previousHeight(int x)
+	{
+		int res = 0;
+		for(int i=heights[x]-1; i>=0; i--)
+		{
+			if(grid[x][i])
+			{
+				res = i;
+				break;
+			}
+		}
+		return res==0 ? 0 : res+1;
 	}
 
 	//Copies row from into row to of grid.

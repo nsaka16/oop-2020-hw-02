@@ -42,19 +42,9 @@ public class BoardTest extends TestCase {
 		sizeTest3();
 	}
 
-	//Check the dropHeight() method.
-	//Should we check out of bounds drops?
-	public void testDropHeight()
-	{
-		//2 distinct tests.
-		//firstDropTest();
-		//secondDropTest();
-	}
-
 	//Testing undo.
 	public void testUndo()
 	{
-		//2 distinct tests.
 		//firstUndoTest();
 		//secondUndoTest();
 	}
@@ -97,6 +87,7 @@ public class BoardTest extends TestCase {
 		b.clearRows();	//This should change nothing.
 		//Checking
 		assertEquals( Board.PLACE_OK, result );
+		assertEquals( 1, b.getColumnHeight( 0 ) );
 		assertEquals(true, b.getGrid(0,0));
 		assertEquals(true, b.getGrid(1,0));
 		assertEquals(true, b.getGrid(2,0));
@@ -246,7 +237,6 @@ public class BoardTest extends TestCase {
 	{
 		int res1 = b.place(pyr1,0,0);
 		b.commit();
-
 		//Should get placed ok.
 		assertEquals( Board.PLACE_OK, res1 );
 
@@ -264,7 +254,6 @@ public class BoardTest extends TestCase {
 	{
 		int res3 = b.place(stick1,3,0);
 		//Should we use commit here??
-
 		assertEquals( Board.PLACE_ROW_FILLED, res3 );
 		assertEquals( 4, b.getMaxHeight() );
 
@@ -287,61 +276,95 @@ public class BoardTest extends TestCase {
 		assertEquals( Board.PLACE_OUT_BOUNDS, resOutOfBounds );
 	}
 
-	/*
-		First/simple dropHeight() test.
-	 	Drop test on filled tetris board????????????????
-	 */
-	private void firstDropTest()
+	//Check the dropHeight() method.
+	//Should we check out of bounds drops?
+	//Drop test on filled tetris board????????????????
+	public void testDropHeight()
 	{
-		b = new Board( 4, 6 );	//Initialising specific test board.
-
-		int h1 = b.dropHeight( pyr1, 0 );	//Dropping on an empty board Should get y == 0.
-		assertEquals(0, h1 );
-
-		int res1 = b.place(pyr1,0,0);	//Now place pyramid on board.
-		b.commit();
-
-		//Checking dropping rotated s2,on two different x coordinates [ 0 , 1 ].
-		int h2 = b.dropHeight(s2_1.computeNextRotation(), 1);
-		assertEquals( 2, h2 );
-		int h3 = b.dropHeight(s2_1.computeNextRotation(), 0);
-		assertEquals( 1, h3 );
-
-		int res2 = b.place( square, 2, 1 );	//Placing square at (2,1).
-
-		int h4 = b.dropHeight( square, 2 );	//Checking dropping square on x==2.
-		assertEquals( 3, h4 );
+		//dropTest1();
+		//dropTest2();
+		//dropTest3();
 	}
 
-	//Checking dropHeight() and introducing getGrid().
-	private void secondDropTest()
+	private void dropTest1()
 	{
-		b = new Board( 3, 6 );	//Initialising specific test board.
+		//Initialising specific test board.
+		b = new Board( 4, 6 );
+		dropOnEmptyBoard_test1();
+		int res1 = b.place(pyr1,0,0);	//Now place pyramid on board.
+		b.commit();
+		dropOnFigures1_test1();
+		int res2 = b.place( square, 2, 1 );	//Placing square at (2,1).
+		dropOnFigures2_test1();
+	}
+
+	private void dropOnEmptyBoard_test1()
+	{
+		//Dropping on an empty board Should get y == 0.
+		int h1 = b.dropHeight( pyr1, 0 );
+		assertEquals(0, h1 );
+	}
+
+	private void dropOnFigures1_test1()
+	{
+		//Checking dropping rotated s2,on two different x coordinates  0 , 1.
+		int h1 = b.dropHeight(s2_1.computeNextRotation(), 1);
+		assertEquals( 2, h1 );
+		int h2 = b.dropHeight(s2_1.computeNextRotation(), 0);
+		assertEquals( 1, h2 );
+		int h3 = b.dropHeight(s2_1, 1 );
+		assertEquals(1 , h3);
+	}
+
+	private void dropOnFigures2_test1()
+	{
+		int h4 = b.dropHeight( square, 2 );	//Checking dropping square on x==2.
+		int h5 = b.dropHeight( square, 1 );	//Checking dropping square on x==1.
+		assertEquals( 3, h4 );
+		assertEquals(3 , h5);
+	}
+
+	//Check drop height with clearRows().
+	private void dropTest2()
+	{
+		b = new Board( 3, 5 );	//Initialising specific test board.
+		placeFigures_DropTest2();
+		dropOnFigures1_DropTest2();
+	}
+
+	private void placeFigures_DropTest2()
+	{
 		int res1 = b.place(pyr1,0,0);	//placing pyramid
 		b.commit();
-
 		assertEquals(Board.PLACE_ROW_FILLED, res1);	//Should return row filled status.
-
 		b.clearRows();	//Clear filled row(0-th row)
 		b.commit();
-
-		//Checking getGrid() method, checking whether cell of the grid is filled.
+		//Checking whether cells of the grid are filled.
 		assertEquals( true , b.getGrid(1,0));
 		assertEquals( false , b.getGrid(0,0));
 		assertEquals( false , b.getGrid(2,0));
+	}
 
+	private void dropOnFigures1_DropTest2()
+	{
 		//Dropping stick on x=0.
 		int h1 = b.dropHeight(stick1, 0 );
 		assertEquals( 0 , h1 );
-
 		//Dropping square on x=0.
 		int h2 = b.dropHeight(square, 1);
 		assertEquals( 1 , h2 );
-
 		//This is special case when x index is out of bounds.
 		int h3 = b.dropHeight(square, 4);
 		assertEquals(-1, h3);
+	}
 
+	private void dropTest3()
+	{
+		b = new Board(3, 5);
+		b.place( stick1, 0, 0 );
+		assertEquals(-1,b.dropHeight( square,0 ) );
+		assertEquals( -1, b.dropHeight(s1_1,0 ) );
+		assertEquals( 3, b.dropHeight(s1_1,0 ) );
 	}
 
 	//Testing undo operations.
