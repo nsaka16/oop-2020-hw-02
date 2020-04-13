@@ -87,11 +87,21 @@ public class Board	{
 	 to compute this fast -- O(skirt length).
 	*/
 	public int dropHeight(Piece piece, int x) {
-		if( !xInBounds(x) || piece == null ) return -1;
+		if( !xInBounds(x) || piece == null || x + piece.getWidth() > width ) return -1;
 		else {
-
+			int[] skirt = piece.getSkirt();
+			int res= 0;
+			for(int i=0; i<skirt.length; i++)
+			{
+				int xHeight = heights[x+i];
+				int xSkirt = skirt[i];
+				if( xHeight - xSkirt > res)
+				{
+					res = xHeight - xSkirt;
+				}
+			}
+			return res;
 		}
-		return -1;
 	}
 
 	/**
@@ -259,22 +269,26 @@ public class Board	{
 		maxHeight--;
 		for( int i=0; i < width; i++ )
 		{
-			heights[i] = previousHeight(i);
+			heights[i] = calculateHeight(i);
 		}
 	}
 
-	private int previousHeight(int x)
+	/*
+		When decreasing current height,
+		next height is not necessary one below it,
+		and we should find next height below current one.
+	 */
+	private int calculateHeight(int x)
 	{
 		int res = 0;
-		for(int i=heights[x]-1; i>=0; i--)
+		for(int i=0; i<height; i++)
 		{
 			if(grid[x][i])
 			{
-				res = i;
-				break;
+				res = i + 1;
 			}
 		}
-		return res==0 ? 0 : res+1;
+		return res;
 	}
 
 	//Copies row from into row to of grid.

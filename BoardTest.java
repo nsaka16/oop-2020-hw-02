@@ -42,13 +42,6 @@ public class BoardTest extends TestCase {
 		sizeTest3();
 	}
 
-	//Testing undo.
-	public void testUndo()
-	{
-		//firstUndoTest();
-		//secondUndoTest();
-	}
-
 	//Checking getWidth, getHeight of board.
 	private void sizeTest0()
 	{
@@ -66,7 +59,6 @@ public class BoardTest extends TestCase {
 		placeStick_OutOfBounds_sizeTest1();	//Now placing stick at (2,3).
 		placeStick2_Bad_sizeTest1();	//Now placing again stick but at (0,0)
 	}
-
 
 	//Checking board before placing anything.
 	private void preCheck_sizeTest1()
@@ -281,9 +273,9 @@ public class BoardTest extends TestCase {
 	//Drop test on filled tetris board????????????????
 	public void testDropHeight()
 	{
-		//dropTest1();
-		//dropTest2();
-		//dropTest3();
+		dropTest1();
+		dropTest2();
+		dropTest3();
 	}
 
 	private void dropTest1()
@@ -358,13 +350,21 @@ public class BoardTest extends TestCase {
 		assertEquals(-1, h3);
 	}
 
+	//Drop on nearly filled board, it should get error.
 	private void dropTest3()
 	{
-		b = new Board(3, 5);
+		b = new Board(3, 6);
 		b.place( stick1, 0, 0 );
-		assertEquals(-1,b.dropHeight( square,0 ) );
-		assertEquals( -1, b.dropHeight(s1_1,0 ) );
-		assertEquals( 3, b.dropHeight(s1_1,0 ) );
+		assertEquals(4,b.dropHeight( square,0 ) );
+		assertEquals( -1, b.dropHeight(stick1.computeNextRotation(),1 ) );
+	}
+
+
+	//Testing undo.
+	public void testUndo()
+	{
+		//firstUndoTest();
+		//secondUndoTest();
 	}
 
 	//Testing undo operations.
