@@ -40,10 +40,12 @@ public class Board	{
 		widths = new int [ height ];
 		heights = new int [ width ];
 		maxHeight =  0 ;
+		//BackUp variables.
 		xWidths = new int[ height ];
 		xHeights = new int[ width ];
 		xGrid = new boolean[width][height];
-		commit();
+		xMaxHeight = 0;
+		committed = true;
 	}
 	
 	
@@ -78,7 +80,36 @@ public class Board	{
 	*/
 	public void sanityCheck() {
 		if (DEBUG) {
-			// YOUR CODE HERE
+			try{
+				int currentMaxHeight = 0;
+				int currentWidths[] = new int[height];
+				int currentHeights[] = new int[width];
+				for(int x=0; x<width; x++)
+				{
+					for(int y=0; y<height; y++)
+					{
+						if(grid[x][y])
+						{
+							if(y+1>currentHeights[x]){
+								currentHeights[x]=y+1;
+								if(currentHeights[x] > currentMaxHeight)
+								{
+									currentMaxHeight = currentHeights[x];
+								}
+							}
+							currentWidths[y]++;
+						}
+					}
+				}
+				if(!Arrays.equals(currentWidths, widths)) throw new RuntimeException("Widths not sane.");
+				if(!Arrays.equals(currentHeights, heights)) throw new RuntimeException("Heights not sane.");
+				if(currentMaxHeight != maxHeight ) throw new RuntimeException("Max. height not sane.");
+			}
+			catch (RuntimeException e)
+			{
+				System.out.println(e);
+			}
+
 		}
 	}
 	
@@ -186,8 +217,10 @@ public class Board	{
 		// flag !committed problem
 		if (!committed) throw new RuntimeException("place commit problem");
 		//Will need to sve memento here.
-		int res = checkBody( piece, x, y );
 		committed = false;
+		copy();
+		int res = checkBody( piece, x, y );
+		sanityCheck();
 		return res;
 	}
 
@@ -238,6 +271,12 @@ public class Board	{
 	 things above down. Returns the number of rows cleared.
 	*/
 	public int clearRows() {
+		if(committed)
+		{
+			copy();
+			committed = false;
+		}
+		committed = false;
 		int rowsCleared = 0;
 		int start = getLowerFilledIndex();	//find lowest filled row.
 		if( start == -1 ) return 0;
@@ -253,8 +292,7 @@ public class Board	{
 				to--;	//This is needed, as two filled rows can be adjacent.
 			}
 		}
-		committed = false;
-		sanityCheck();
+		if(DEBUG)sanityCheck();
 		return rowsCleared;
 	}
 
@@ -279,8 +317,6 @@ public class Board	{
 		}
 	}
 
-
-
 	/*
 		When decreasing current height,
 		next height is not necessary one below it,
@@ -296,7 +332,7 @@ public class Board	{
 				res = i + 1;
 			}
 		}
-		if( res>maxHeight ) maxHeight = res;
+		if( res > maxHeight ) maxHeight = res;
 		return res;
 	}
 
@@ -339,10 +375,10 @@ public class Board	{
 	 See the overview docs.
 	*/
 	public void undo() {
-		if( committed==true ) return;
+		if(committed == true) return;
 		swap();
 		commit();
-		sanityCheck();
+		if(DEBUG)sanityCheck();
 	}
 	
 	
@@ -350,12 +386,10 @@ public class Board	{
 	 Puts the board in the committed state.
 	*/
 	public void commit() {
-		if( committed==true ) return;
-		copy();
 		committed = true;
 	}
 
-
+	//This function is used upon commit(), to save the state.
 	private void copy()
 	{
 		System.arraycopy(widths,0,xWidths,0,widths.length);
@@ -367,21 +401,25 @@ public class Board	{
 		xMaxHeight = maxHeight;
 	}
 
+	//Retrieve last saved state.
 	private void swap()
 	{
+		//Save widths values.
 		int[] temp = widths;
 		widths = xWidths;
 		xWidths = temp;
 
+		//Save heights values.
 		int[] temp2 = heights;
 		heights = xHeights;
 		xHeights = temp2;
 
+		//Save grid values.
 		boolean[][] temp3 = grid;
 		grid = xGrid;
-		xGrid = grid;
+		xGrid = temp3;
 
-
+		//Save maxHeight values.
 		int temp4 = maxHeight;
 		maxHeight = xMaxHeight;
 		xMaxHeight = temp4;

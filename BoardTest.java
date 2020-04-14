@@ -91,6 +91,7 @@ public class BoardTest extends TestCase {
 		int result = b.place(pyr1,0,0);
 		b.commit();
 		b.clearRows();	//This should change nothing.
+		b.commit();
 		assertEquals( Board.PLACE_OK, result );
 		assertEquals( 1, b.getColumnHeight( 0 ) );
 		assertEquals(true, b.getGrid(0,0));
@@ -349,28 +350,20 @@ public class BoardTest extends TestCase {
 	//Testing undo.
 	public void testUndo()
 	{
-		firstUndoTest();
+		//firstUndoTest();
 		secondUndoTest();
 	}
 
-	//Testing undo operations.
-	//!!!!!????? can i do place and than clearRows without first committing? Iam doing it here so.
+	//Undo test lvl.: 1
 	private void firstUndoTest()
 	{
-		b = new Board(5,8);	//Initialising specific test board.
-
-		//Adding pyramid to the board.
+		b = new Board(5,8);
 		int res1 = b.place( pyr1,0,0 );
 		b.commit();
-
-		//Adding square to the board.
 		int res2 = b.place(square, 3,0 );
-
-
-		//Clearing rows.(First row should get cleared).
 		int rowsCleared = b.clearRows();
-
 		//Checking post clear parameters of board.
+		assertEquals(1, rowsCleared);
 		assertEquals( 3 , b.getRowWidth(0) );
 		assertEquals( true , b.getGrid(1,0) );
 		assertEquals( true, b.getGrid( 3, 0 ) );
@@ -379,84 +372,55 @@ public class BoardTest extends TestCase {
 		assertEquals(1 , b.getMaxHeight());
 
 		//Undoing changes.
-		//Should return to last committed state.
 		b.undo();
-
-		//Checking post undo parameters of board.
-		//Now state is with only pyramid on board.
 		assertEquals( 3 , b.getRowWidth(0) );
 		assertEquals( 1 , b.getRowWidth(1) );
 		assertEquals(2 , b.getMaxHeight());
-
 		//Again adding another piece.
 		int res3 = b.place( l1_1, 2, 1 );
-
-		//Checking adding piece after undoing.
 		assertEquals( Board.PLACE_OK, res3 );
 		assertEquals( 3, b.getRowWidth(0) );
 		assertEquals( 3, b.getRowWidth(1) );
 		assertEquals( 4, b.getColumnHeight(2) );
-
 	}
 
-	//Again testing several undo cases.
+	//Undo test lvl.: 2
 	private void secondUndoTest()
 	{
-		b = new Board(5,8);	//Initialising specific test board.
-
-		//Checking empty board.
+		b = new Board(5,8);
 		assertEquals( 0, b.getRowWidth(0) );
 		assertEquals( 0, b.getMaxHeight() );
-
-		//Placing L2 figure.
 		int res1 = b.place(l2_1,3, 0);
-
-		//Checking post placement.
 		assertEquals(Board.PLACE_OK, res1);
 		assertEquals( 2, b.getRowWidth(0 ));
 		assertEquals( 1, b.getRowWidth(2) );
 		assertEquals( 3 , b.getMaxHeight() );
-
 		b.undo();	//Undoing changes.
-
-		//Checking empty board again, post undo.
 		assertEquals( 0, b.getRowWidth(0) );
 		assertEquals( 0, b.getMaxHeight() );
 		assertEquals( 0, b.getColumnHeight(3) );
-
-		//placing on last placed/undone coordinates,
-		//Checking that it have truly undone.
 		int res2 = b.place(square,3, 0);
-
-		//Check square placement.
+		b.commit();
 		assertEquals(Board.PLACE_OK , res2);
 		assertEquals(2, b.getRowWidth(0));
 		assertEquals( 2, b.getRowWidth(1));
 		assertEquals( 2, b.getMaxHeight() );
-
-		b.commit();
-
-		//Adding pyramid to board.
-		int res3 = b.place(pyr1,0,0); //It should fill first row.
-		b.clearRows();	//first row should get cleared.
-
-		//Checking if rows cleared properly.
+		int res3 = b.place(pyr1,0,0);
+		b.clearRows();
 		assertEquals(3 , b.getRowWidth(0));
 		assertEquals(1 , b.getMaxHeight());
 		assertEquals(0, b.getColumnHeight(2));
 		assertEquals(0, b.getColumnHeight(0));
 		assertEquals(1, b.getColumnHeight(1));
 		assertEquals(1, b.getColumnHeight(3));
-
+		assertEquals(1, b.getColumnHeight(4));
 		//Undoing clearing rows.
 		b.undo();
-
 		//Check that there is only square left.
 		assertEquals(2, b.getRowWidth(0));
 		assertEquals( 2, b.getRowWidth(1));
 		assertEquals( 2, b.getColumnHeight(3));
 		assertEquals( 2, b.getColumnHeight(4));
 		assertEquals( 2, b.getMaxHeight());
-
 	}
 }
