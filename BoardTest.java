@@ -123,6 +123,7 @@ public class BoardTest extends TestCase {
 		int result2 = b.place( stick1.computeNextRotation(),  2, 3 );
 		b.commit();
 		assertEquals( Board.PLACE_OUT_BOUNDS, result2 );
+		System.out.println(b.toString());
 		assertEquals( 4 ,b.getColumnHeight(2) );
 		assertEquals( 4, b.getMaxHeight() );
 		assertEquals(  3 , b.getRowWidth( 3 ));
@@ -350,7 +351,7 @@ public class BoardTest extends TestCase {
 	//Testing undo.
 	public void testUndo()
 	{
-		//firstUndoTest();
+		firstUndoTest();
 		secondUndoTest();
 	}
 

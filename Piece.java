@@ -89,10 +89,11 @@ public class Piece {
 	 rotated from the receiver.
 	 */
 	public Piece computeNextRotation() {
+		//get corresponding array of rotated piece.
+		TPoint[] nextRotation = getCCRotation( this.body );
 
-		TPoint[] nextRotation = getCCRotation( this.body );	//get corresponding array of rotated piece.
-
-		return new Piece( nextRotation );	//It's crucial to create new one.
+		//It's crucial to create new one.
+		return new Piece( nextRotation );
 	}
 
 	/**
@@ -150,7 +151,8 @@ public class Piece {
 	 */
 	private TPoint[] getCCRotation( TPoint[] array )
 	{
-		TPoint[] result = new TPoint[ array.length ];	//It's important not to change original body array.
+		//It's important not to change original body array.
+		TPoint[] result = new TPoint[ array.length ];
 
 		for( int i = 0; i < result.length; i++ )
 		{
@@ -320,11 +322,6 @@ public class Piece {
 	 as possible. Returns the root piece. fastRotation() relies on the
 	 pointer structure setup here.
 	*/
-	/*
-	 Implementation: uses computeNextRotation()
-	 and Piece.equals() to detect when the rotations have gotten us back
-	 to the first piece.
-	*/
 	private static Piece makeFastRotations(Piece root) {
 
 		//get 2 pointers, using while cycle connect circle of rotations.
@@ -339,7 +336,7 @@ public class Piece {
 		}
 
 		//Make Last connection.
-		previousPiece.next = nextPiece;
+		previousPiece.next = root;
 		return root;
 	}
 	
