@@ -349,8 +349,8 @@ public class BoardTest extends TestCase {
 	//Testing undo.
 	public void testUndo()
 	{
-		//firstUndoTest();
-		//secondUndoTest();
+		firstUndoTest();
+		secondUndoTest();
 	}
 
 	//Testing undo operations.
@@ -413,7 +413,8 @@ public class BoardTest extends TestCase {
 
 		//Checking post placement.
 		assertEquals(Board.PLACE_OK, res1);
-		assertEquals( 0, b.getRowWidth(2) );
+		assertEquals( 2, b.getRowWidth(0 ));
+		assertEquals( 1, b.getRowWidth(2) );
 		assertEquals( 3 , b.getMaxHeight() );
 
 		b.undo();	//Undoing changes.
@@ -421,6 +422,7 @@ public class BoardTest extends TestCase {
 		//Checking empty board again, post undo.
 		assertEquals( 0, b.getRowWidth(0) );
 		assertEquals( 0, b.getMaxHeight() );
+		assertEquals( 0, b.getColumnHeight(3) );
 
 		//placing on last placed/undone coordinates,
 		//Checking that it have truly undone.
@@ -430,6 +432,7 @@ public class BoardTest extends TestCase {
 		assertEquals(Board.PLACE_OK , res2);
 		assertEquals(2, b.getRowWidth(0));
 		assertEquals( 2, b.getRowWidth(1));
+		assertEquals( 2, b.getMaxHeight() );
 
 		b.commit();
 
@@ -441,6 +444,9 @@ public class BoardTest extends TestCase {
 		assertEquals(3 , b.getRowWidth(0));
 		assertEquals(1 , b.getMaxHeight());
 		assertEquals(0, b.getColumnHeight(2));
+		assertEquals(0, b.getColumnHeight(0));
+		assertEquals(1, b.getColumnHeight(1));
+		assertEquals(1, b.getColumnHeight(3));
 
 		//Undoing clearing rows.
 		b.undo();
@@ -448,11 +454,9 @@ public class BoardTest extends TestCase {
 		//Check that there is only square left.
 		assertEquals(2, b.getRowWidth(0));
 		assertEquals( 2, b.getRowWidth(1));
+		assertEquals( 2, b.getColumnHeight(3));
+		assertEquals( 2, b.getColumnHeight(4));
+		assertEquals( 2, b.getMaxHeight());
 
 	}
-	// Make  more tests, by putting together longer series of
-	// place, clearRows, undo, place ... checking a few col/row/max
-	// numbers that the board looks right after the operations.
-	
-	
 }

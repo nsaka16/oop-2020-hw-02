@@ -17,15 +17,17 @@ public class Board	{
 	private boolean[][] grid;
 	private boolean DEBUG = true;
 	boolean committed;
-
 	//These array are used to store filled spots in columns/rows.
 	private int[] widths;
 	private int[] heights;
-
 	//This is returned upon getMaxHeight() call.
 	private int maxHeight;
-	
-	// Here a few trivial methods are provided:
+
+
+	private boolean[][] xGrid;
+	private int[] xWidths;
+	private int[] xHeights;
+	private int xMaxHeight;
 	
 	/**
 	 Creates an empty board of the given width and height
@@ -35,10 +37,13 @@ public class Board	{
 		this.width = width;
 		this.height = height;
 		grid = new boolean[width][height];
-		committed = true;	//Should be committed at the start.
-		widths = new int [ height ];	//initializing widths,heights array.
+		widths = new int [ height ];
 		heights = new int [ width ];
-		maxHeight =  0 ;	//Setting max height to zero.
+		maxHeight =  0 ;
+		xWidths = new int[ height ];
+		xHeights = new int[ width ];
+		xGrid = new boolean[width][height];
+		commit();
 	}
 	
 	
@@ -180,9 +185,9 @@ public class Board	{
 	public int place(Piece piece, int x, int y) {
 		// flag !committed problem
 		if (!committed) throw new RuntimeException("place commit problem");
-
 		//Will need to sve memento here.
 		int res = checkBody( piece, x, y );
+		committed = false;
 		return res;
 	}
 
@@ -248,6 +253,7 @@ public class Board	{
 				to--;	//This is needed, as two filled rows can be adjacent.
 			}
 		}
+		committed = false;
 		sanityCheck();
 		return rowsCleared;
 	}
@@ -333,7 +339,10 @@ public class Board	{
 	 See the overview docs.
 	*/
 	public void undo() {
-		// YOUR CODE HERE
+		if( committed==true ) return;
+		swap();
+		commit();
+		sanityCheck();
 	}
 	
 	
@@ -341,9 +350,42 @@ public class Board	{
 	 Puts the board in the committed state.
 	*/
 	public void commit() {
+		if( committed==true ) return;
+		copy();
 		committed = true;
 	}
 
+
+	private void copy()
+	{
+		System.arraycopy(widths,0,xWidths,0,widths.length);
+		System.arraycopy(heights,0,xHeights,0,heights.length);
+		for(int i=0; i<grid.length; i++)
+		{
+			System.arraycopy(grid[i],0,xGrid[i],0,grid[i].length);
+		}
+		xMaxHeight = maxHeight;
+	}
+
+	private void swap()
+	{
+		int[] temp = widths;
+		widths = xWidths;
+		xWidths = temp;
+
+		int[] temp2 = heights;
+		heights = xHeights;
+		xHeights = temp2;
+
+		boolean[][] temp3 = grid;
+		grid = xGrid;
+		xGrid = grid;
+
+
+		int temp4 = maxHeight;
+		maxHeight = xMaxHeight;
+		xMaxHeight = temp4;
+	}
 
 	
 	/*
