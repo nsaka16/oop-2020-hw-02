@@ -52,6 +52,7 @@ public class BoardTest extends TestCase {
 	private void sizeTest0()
 	{
 		b = new Board(3,4);
+		b.toString();	//This was just used for debbugging.
 		assertEquals(3, b.getWidth() );
 		assertEquals( 4 , b.getHeight() );
 		//Now Checking that board's empty.
@@ -99,6 +100,7 @@ public class BoardTest extends TestCase {
 		assertEquals(true, b.getGrid(2,0));
 		assertEquals(false, b.getGrid(3,0));
 		assertEquals(true, b.getGrid(1,1));
+		assertEquals(true , b.getGrid(-1,-1));
 	}
 
 	//sizeTest1 -> Placing(OK) and Checking s1_2 at (1,1).
@@ -123,7 +125,6 @@ public class BoardTest extends TestCase {
 		int result2 = b.place( stick1.computeNextRotation(),  2, 3 );
 		b.commit();
 		assertEquals( Board.PLACE_OUT_BOUNDS, result2 );
-		System.out.println(b.toString());
 		assertEquals( 4 ,b.getColumnHeight(2) );
 		assertEquals( 4, b.getMaxHeight() );
 		assertEquals(  3 , b.getRowWidth( 3 ));
@@ -153,7 +154,6 @@ public class BoardTest extends TestCase {
 	private void placeFigures_RowFilled_sizeTest2()
 	{
 		int result1 = b.place( pyr1,0,0);
-		b.commit();
 		assertEquals( Board.PLACE_ROW_FILLED, result1 );
 		assertEquals( 3, b.getRowWidth( 0 ) );
 		assertEquals( 1, b.getRowWidth( 1 ) );
@@ -279,6 +279,8 @@ public class BoardTest extends TestCase {
 	{
 		int h1 = b.dropHeight( pyr1, 0 );
 		assertEquals(0, h1 );
+		int h2 = b.dropHeight(null, 0);
+		assertEquals(-1, h2 );
 	}
 
 	//DropTest1 -> Dropping and checking s2_1,s2_2.
@@ -374,6 +376,7 @@ public class BoardTest extends TestCase {
 
 		//Undoing changes.
 		b.undo();
+		b.undo();	//This second undo should change nothing.
 		assertEquals( 3 , b.getRowWidth(0) );
 		assertEquals( 1 , b.getRowWidth(1) );
 		assertEquals(2 , b.getMaxHeight());

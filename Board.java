@@ -123,8 +123,8 @@ public class Board	{
 	 to compute this fast -- O(skirt length).
 	*/
 	public int dropHeight(Piece piece, int x) {
-//		if( !xInBounds(x) || piece == null || x + piece.getWidth() > width ) return -1;
-//		else {
+		if( !xInBounds(x) || piece == null || x + piece.getWidth() > width ) return -1;
+		else {
 			int[] skirt = piece.getSkirt();
 			int res= 0;
 			for(int i=0; i<skirt.length; i++)
@@ -137,7 +137,7 @@ public class Board	{
 				}
 			}
 			return res;
-		//}
+		}
 	}
 
 	/**
@@ -276,7 +276,6 @@ public class Board	{
 			copy();
 			committed = false;
 		}
-		committed = false;
 		int rowsCleared = 0;
 		int start = getLowerFilledIndex();	//find lowest filled row.
 		if( start == -1 ) return 0;
