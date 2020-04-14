@@ -241,8 +241,9 @@ public class Board	{
 			//Only do process for filled rows.
 			if( isRowFilled(to) )
 			{
+				maxHeight = 0;
 				moveGraphDown(to);	//Move everything upper than filled row one row down.
-				decreaseHeight();	//for every filled row decrease all heights.
+				changeHeights();	//for every filled row decrease all heights.
 				rowsCleared++;
 				to--;	//This is needed, as two filled rows can be adjacent.
 			}
@@ -264,14 +265,15 @@ public class Board	{
 	}
 
 	//Decrease all heights in heights array.
-	private void decreaseHeight()
+	private void changeHeights()
 	{
-		maxHeight--;
 		for( int i=0; i < width; i++ )
 		{
 			heights[i] = calculateHeight(i);
 		}
 	}
+
+
 
 	/*
 		When decreasing current height,
@@ -288,6 +290,7 @@ public class Board	{
 				res = i + 1;
 			}
 		}
+		if( res>maxHeight ) maxHeight = res;
 		return res;
 	}
 
