@@ -94,6 +94,9 @@ public class BoardTest extends TestCase {
 		assertEquals(Board.PLACE_OK, res3);
 		int res4 = b.place(square, 0 , -2);
 		assertEquals(Board.PLACE_OUT_BOUNDS, res4);
+		assertEquals(true, b.getGrid(-1,-1));
+		assertEquals(true, b.getGrid(-1,0));
+		assertEquals(true, b.getGrid(0,-1));
 	}
 
 	public void testException()
@@ -317,6 +320,10 @@ public class BoardTest extends TestCase {
 		assertEquals(0, h1 );
 		int h2 = b.dropHeight(null, 0);
 		assertEquals(-1, h2 );
+		int h3 = b.dropHeight(pyr1, 3);
+		assertEquals(-1, h3);
+		int h4 = b.dropHeight(pyr1, -2);
+		assertEquals(-1, h4);
 	}
 
 	//DropTest1 -> Dropping and checking s2_1,s2_2.

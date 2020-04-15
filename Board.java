@@ -190,13 +190,7 @@ public class Board	{
 	//returns true if grid[x][y] is already filled.
 	private boolean isInvalidPoint( int x, int y )
 	{
-		if(grid[x][y])
-		{
-			System.out.println("----");
-			return true;
-		}
-		System.out.println("----+++");
-		return false;
+		return grid[x][y];
 	}
 
 
@@ -391,7 +385,7 @@ public class Board	{
 	 See the overview docs.
 	*/
 	public void undo() {
-		if(committed == true) return;
+		if(committed == true)return;
 		swap();
 		commit();
 //		if(DEBUG){
