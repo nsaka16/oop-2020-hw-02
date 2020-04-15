@@ -76,6 +76,38 @@ public class BoardTest extends TestCase {
 		placeStick2_Bad_sizeTest1();
 	}
 
+	//Placing figures, and then placing figure at the free
+	// place below them, so heights dont update.
+	public void testSize()
+	{
+		b = new Board(10,20);
+		int res1=b.place(square, 0,0);
+		b.commit();
+		assertEquals(Board.PLACE_OK,res1 );
+		int res2= b.place(stick1.computeNextRotation(),1,2);
+		b.commit();
+		b.commit();//second commit should change nothing.
+		assertEquals(Board.PLACE_OK,res2);
+		int res3= b.place(stick1.computeNextRotation(),2,0);
+		b.commit();
+		System.out.println(b.toString());//For branch coverage
+		assertEquals(Board.PLACE_OK, res3);
+		int res4 = b.place(square, 0 , -2);
+		assertEquals(Board.PLACE_OUT_BOUNDS, res4);
+	}
+
+	public void testException()
+	{
+		b= new Board(3,5);
+		try
+		{
+			b.place(stick1,0,0);
+			b.place(square, 0,2);
+		}
+		catch ( RuntimeException e )
+		{
+			assertEquals("place commit problem", e.getMessage()); }
+	}
 	//sizeTest1 -> Emptiness Check before adding figures.
 	private void preCheck_sizeTest1()
 	{
@@ -101,6 +133,7 @@ public class BoardTest extends TestCase {
 		assertEquals(false, b.getGrid(3,0));
 		assertEquals(true, b.getGrid(1,1));
 		assertEquals(true , b.getGrid(-1,-1));
+
 	}
 
 	//sizeTest1 -> Placing(OK) and Checking s1_2 at (1,1).
@@ -128,6 +161,9 @@ public class BoardTest extends TestCase {
 		assertEquals( 4 ,b.getColumnHeight(2) );
 		assertEquals( 4, b.getMaxHeight() );
 		assertEquals(  3 , b.getRowWidth( 3 ));
+		int result3 = b.place(stick1, -1 ,0);
+		b.commit();
+		assertEquals(Board.PLACE_OUT_BOUNDS, result3 );
 	}
 
 	//sizeTest1 -> Placing(BAD) and Checking stick1 at (0,0).

@@ -79,38 +79,38 @@ public class Board	{
 	 for debugging.
 	*/
 	public void sanityCheck() {
-		if (DEBUG) {
-			try{
-				int currentMaxHeight = 0;
-				int currentWidths[] = new int[height];
-				int currentHeights[] = new int[width];
-				for(int x=0; x<width; x++)
-				{
-					for(int y=0; y<height; y++)
-					{
-						if(grid[x][y])
-						{
-							if(y+1>currentHeights[x]){
-								currentHeights[x]=y+1;
-								if(currentHeights[x] > currentMaxHeight)
-								{
-									currentMaxHeight = currentHeights[x];
-								}
-							}
-							currentWidths[y]++;
-						}
-					}
-				}
-				if(!Arrays.equals(currentWidths, widths)) throw new RuntimeException("Widths not sane.");
-				if(!Arrays.equals(currentHeights, heights)) throw new RuntimeException("Heights not sane.");
-				if(currentMaxHeight != maxHeight ) throw new RuntimeException("Max. height not sane.");
-			}
-			catch (RuntimeException e)
-			{
-				System.out.println(e);
-			}
-
-		}
+//		if (DEBUG) {
+//			try{
+//				int currentMaxHeight = 0;
+//				int currentWidths[] = new int[height];
+//				int currentHeights[] = new int[width];
+//				for(int x=0; x<width; x++)
+//				{
+//					for(int y=0; y<height; y++)
+//					{
+//						if(grid[x][y])
+//						{
+//							if(y+1>currentHeights[x]){
+//								currentHeights[x]=y+1;
+//								if(currentHeights[x] > currentMaxHeight)
+//								{
+//									currentMaxHeight = currentHeights[x];
+//								}
+//							}
+//							currentWidths[y]++;
+//						}
+//					}
+//				}
+//				if(!Arrays.equals(currentWidths, widths)) throw new RuntimeException("Widths not sane.");
+//				if(!Arrays.equals(currentHeights, heights)) throw new RuntimeException("Heights not sane.");
+//				if(currentMaxHeight != maxHeight ) throw new RuntimeException("Max. height not sane.");
+//			}
+//			catch (RuntimeException e)
+//			{
+//				System.out.println(e);
+//			}
+//
+//		}
 	}
 	
 	/**
@@ -190,7 +190,13 @@ public class Board	{
 	//returns true if grid[x][y] is already filled.
 	private boolean isInvalidPoint( int x, int y )
 	{
-		return grid[x][y];
+		if(grid[x][y])
+		{
+			System.out.println("----");
+			return true;
+		}
+		System.out.println("----+++");
+		return false;
 	}
 
 
@@ -216,11 +222,14 @@ public class Board	{
 	public int place(Piece piece, int x, int y) {
 		// flag !committed problem
 		if (!committed) throw new RuntimeException("place commit problem");
+		if(y<0){
+			return PLACE_OUT_BOUNDS;
+		}
 		//Will need to sve memento here.
 		committed = false;
 		copy();
 		int res = checkBody( piece, x, y );
-		sanityCheck();
+		//sanityCheck();
 		return res;
 	}
 
@@ -257,7 +266,9 @@ public class Board	{
 	 */
 	private void updateWidthsAndHeights( int x, int y )
 	{
-		if( y+1 > heights[x] ) heights[x] = y + 1;
+		if( y+1 >= heights[x] ) {
+			heights[x] = y + 1;
+		}
 		//if increment heights[x] is bigger then max, set it to be max height.
 		if( heights[x] > getMaxHeight() )
 		{
@@ -278,7 +289,9 @@ public class Board	{
 		}
 		int rowsCleared = 0;
 		int start = getLowerFilledIndex();	//find lowest filled row.
-		if( start == -1 ) return 0;
+		if( start == -1 ) {
+			return 0;
+		}
 		for( int to = start; to < height - 1; to++ )
 		{
 			//Only do process for filled rows.
@@ -291,7 +304,7 @@ public class Board	{
 				to--;	//This is needed, as two filled rows can be adjacent.
 			}
 		}
-		if(DEBUG)sanityCheck();
+		//sanityCheck();
 		return rowsCleared;
 	}
 
@@ -331,7 +344,9 @@ public class Board	{
 				res = i + 1;
 			}
 		}
-		if( res > maxHeight ) maxHeight = res;
+		if( res > maxHeight ){
+			maxHeight = res;
+		}
 		return res;
 	}
 
@@ -353,7 +368,6 @@ public class Board	{
 	//returns true if array  y'th row is filled.
 	private boolean isRowFilled( int y )
 	{
-		if(!yInBounds(y))return false;
 		return widths[y] == width;
 	}
 
@@ -363,7 +377,9 @@ public class Board	{
 	{
 		for( int i = 0; i < height; i++ )
 		{
-			if( isRowFilled( i ) ) return i;
+			if( isRowFilled( i ) ){
+				return i;
+			}
 		}
 		return -1;
 	}
@@ -378,7 +394,10 @@ public class Board	{
 		if(committed == true) return;
 		swap();
 		commit();
-		if(DEBUG)sanityCheck();
+//		if(DEBUG){
+//			sanityCheck();
+//		}
+
 	}
 	
 	
