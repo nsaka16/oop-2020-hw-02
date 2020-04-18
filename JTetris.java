@@ -134,7 +134,9 @@ public class JTetris extends JComponent {
 			}, "left", KeyStroke.getKeyStroke('j'), WHEN_IN_FOCUSED_WINDOW
 		);
 		
-		
+
+
+
 		// RIGHT
 		registerKeyboardAction(
 			new ActionListener() {

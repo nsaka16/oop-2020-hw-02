@@ -391,7 +391,6 @@ public class Board	{
 		sanityCheck();
 	}
 	
-	
 	/**
 	 Puts the board in the committed state.
 	*/
