@@ -22,7 +22,6 @@ public class JBrainTetris extends  JTetris {
         goal = new Brain.Move();
     }
 
-
     @Override
     public void tick(int verb)
     {   boolean tck = true;
@@ -116,6 +115,4 @@ public class JBrainTetris extends  JTetris {
         JFrame frame = createFrame(brainTetris);
         frame.setVisible(true);
     }
-
-
 }
