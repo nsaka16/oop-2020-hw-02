@@ -261,30 +261,11 @@ public class BoardTest extends TestCase {
 		assertEquals( Board.PLACE_OUT_BOUNDS, resOutOfBounds );
 	}
 
-	//Methods checked: [ dropHeight(),getRowWidth(), getColumnHeight() , getMaxHeight(), clearRow(), getGrid(), place() ].
-	public void testDropHeight()
-	{
-		dropTest1();
-		dropTest2();
-		dropTest3();
-	}
-
-	//Drop test lvl.: 1
-	private void dropTest1()
-	{
-		b = new Board( 4, 6 );
-		dropOnEmptyBoard_test1();
-		int res1 = b.place(pyr1,0,0);
-		b.commit();
-		dropOnFigures1_test1();
-		int res2 = b.place( square, 2, 1 );
-		dropOnFigures2_test1();
-	}
-
 	//DropTest1 -> Dropping and checking pyr1.
 	//Entering this method Board has [nothing] in it.
-	private void dropOnEmptyBoard_test1()
+	public void test_dropOnEmptyBoard_dropTest1()
 	{
+		b = new Board( 4, 6 );
 		int h1 = b.dropHeight( pyr1, 0 );
 		assertEquals(0, h1 );
 		int h2 = b.dropHeight(null, 0);
@@ -297,8 +278,11 @@ public class BoardTest extends TestCase {
 
 	//DropTest1 -> Dropping and checking s2_1,s2_2.
 	//Entering this method Board has [ pyr1(0,0) ] in it.
-	private void dropOnFigures1_test1()
+	public void test_dropOnFigures1_dropTest1()
 	{
+		b = new Board( 4, 6 );
+		int res1 = b.place(pyr1,0,0);
+		b.commit();
 		int h1 = b.dropHeight(s2_1.computeNextRotation(), 1);
 		assertEquals( 2, h1 );
 		int h2 = b.dropHeight(s2_1.computeNextRotation(), 0);
@@ -309,26 +293,23 @@ public class BoardTest extends TestCase {
 
 	//DropTest1 -> Dropping and checking s2_1,s2_2.
 	//Entering this method Board has [ pyr1(0,0) ,square(2,1) ] in it.
-	private void dropOnFigures2_test1()
+	public void test_dropOnFigures2_dropTest1()
 	{
+		b = new Board( 4, 6 );
+		int res1 = b.place(pyr1,0,0);
+		b.commit();
+		int res2 = b.place( square, 2, 1 );
 		int h4 = b.dropHeight( square, 2 );
 		int h5 = b.dropHeight( square, 1 );
 		assertEquals( 3, h4 );
 		assertEquals(3 , h5);
 	}
 
-	//Drop test lvl.: 2
-	private void dropTest2()
-	{
-		b = new Board( 3, 5 );
-		placeFigures_DropTest2();
-		dropOnFigures1_DropTest2();
-	}
-
 	//DropTest2 -> Placing and checking pyr1.
 	//Entering this method Board has [ ] in it.
-	private void placeFigures_DropTest2()
+	public void test_placeFigures_DropTest2()
 	{
+		b = new Board( 3, 5 );
 		int res1 = b.place(pyr1,0,0);
 		b.commit();
 		assertEquals(Board.PLACE_ROW_FILLED, res1);
@@ -342,8 +323,13 @@ public class BoardTest extends TestCase {
 
 	//DropTest2 -> Dropping and checking stick1,square.
 	//Entering this method Board has [ true(filled) at (1,0) ] in it.
-	private void dropOnFigures1_DropTest2()
+	public void test_dropOnFigures1_DropTest2()
 	{
+		b = new Board( 3, 5 );
+		int res1 = b.place(pyr1,0,0);
+		b.commit();
+		b.clearRows();
+		b.commit();
 		int h1 = b.dropHeight(stick1, 0 );
 		assertEquals( 0 , h1 );
 		int h2 = b.dropHeight(square, 1);
@@ -353,7 +339,7 @@ public class BoardTest extends TestCase {
 	}
 
 	//Drop test lvl.: 3
-	private void dropTest3()
+	public void test_testDrop3()
 	{
 		b = new Board(3, 6);
 		b.place( stick1, 0, 0 );
@@ -361,16 +347,8 @@ public class BoardTest extends TestCase {
 		assertEquals( -1, b.dropHeight(stick1.computeNextRotation(),1 ) );
 	}
 
-
-	//Testing undo.
-	public void testUndo()
-	{
-		firstUndoTest();
-		secondUndoTest();
-	}
-
 	//Undo test lvl.: 1
-	private void firstUndoTest()
+	public void test_firstUndo()
 	{
 		b = new Board(5,8);
 		int res1 = b.place( pyr1,0,0 );
@@ -401,7 +379,7 @@ public class BoardTest extends TestCase {
 	}
 
 	//Undo test lvl.: 2
-	private void secondUndoTest()
+	public void test_secondUndo()
 	{
 		b = new Board(5,8);
 		assertEquals( 0, b.getRowWidth(0) );
