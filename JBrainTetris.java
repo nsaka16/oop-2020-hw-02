@@ -84,17 +84,20 @@ public class JBrainTetris extends  JTetris {
     public Piece pickNextPiece()
     {
         Random rand = new Random();
+        String msg = "";
         int randomNumber = rand.nextInt(99);
         int sliderValue = slider.getValue();
         if(randomNumber>sliderValue)
         {
-            adversary.setText("*OK*");
+            msg = "*OK*";
+            adversary.setText(msg);
             return super.pickNextPiece();
         }
         else{
             Piece worstPiece = null;
             double worstScore = Integer.MIN_VALUE;
-            adversary.setText("OK");
+            msg = "OK";
+            adversary.setText(msg);
             Brain.Move bestMove = null;
             for(Piece newPiece : pieces)
             {
