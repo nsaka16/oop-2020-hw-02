@@ -46,6 +46,7 @@ public class JBrainTetris extends  JTetris {
             super.tick(verb);
             return false;
         }
+
         //Brain can do only one rotation
         if(!currentPiece.equals(goal.piece))  currentPiece = currentPiece.fastRotation();
         int delta = goal.x - currentX;
@@ -90,28 +91,31 @@ public class JBrainTetris extends  JTetris {
         int sliderValue = slider.getValue();
         if(randomNumber>sliderValue)
         {
-            msg = "*OK*";
-            adversary.setText(msg);
+            adversary.setText("*OK*");
             return super.pickNextPiece();
         }
         else{
-            Piece worstPiece = null;
-            double worstScore = Integer.MIN_VALUE;
-            msg = "OK";
-            adversary.setText(msg);
-            Brain.Move bestMove = null;
-            for(Piece newPiece : pieces)
-            {
-                bestMove = brain.bestMove(board,newPiece,HEIGHT,bestMove);
-                if(bestMove==null) return super.pickNextPiece();
-                if(bestMove.score > worstScore)
-                {
-                    worstPiece = newPiece;
-                    worstScore = bestMove.score;
-                }
-            }
-            return worstPiece;
+            return processPieces();
         }
+    }
+
+    private Piece processPieces()
+    {
+        Piece worstPiece = null;
+        double worstScore = Integer.MIN_VALUE;
+        adversary.setText("OK");
+        Brain.Move bestMove = null;
+        for(Piece newPiece : pieces)
+        {
+            bestMove = brain.bestMove(board,newPiece,HEIGHT,bestMove);
+            if(bestMove==null) return super.pickNextPiece();
+            if(bestMove.score > worstScore)
+            {
+                worstPiece = newPiece;
+                worstScore = bestMove.score;
+            }
+        }
+        return worstPiece;
     }
 
     public static void main(String[] args) {
