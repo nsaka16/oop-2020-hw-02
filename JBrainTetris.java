@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
+//Needed help for this class.
 public class JBrainTetris extends  JTetris {
     /**
      * Creates a new JTetris where each tetris square

@@ -47,6 +47,7 @@ public class BoardTest extends TestCase {
 		assertEquals(Board.PLACE_OK,res2);
 		int res3= b.place(stick1.computeNextRotation(),2,0);
 		b.commit();
+		b.sanityCheck();
 		System.out.println(b.toString());//For branch coverage
 		assertEquals(Board.PLACE_OK, res3);
 		int res4 = b.place(square, 0 , 100);
@@ -139,16 +140,6 @@ public class BoardTest extends TestCase {
 		int result4 = b.place( stick1, 0, 0 );
 		b.commit();
 		assertEquals( Board.PLACE_BAD, result4 );
-	}
-
-	//Size test lvl.: 2
-	public void testSize2()
-	{
-		b = new Board( 3, 6 );
-		//placeFigures_RowFilled_sizeTest2();
-		//placeStick_OK_sizeTest2();
-		//placeStick_RowsFilled_sizeTest2();
-		//placeFigures_RowFilled2_sizeTest2();
 	}
 
 	//sizeTest2 -> Placing(Row_Filled) and Checking pyramid1 at (0,0).
@@ -416,5 +407,22 @@ public class BoardTest extends TestCase {
 		assertEquals( 2, b.getColumnHeight(3));
 		assertEquals( 2, b.getColumnHeight(4));
 		assertEquals( 2, b.getMaxHeight());
+	}
+
+	public void testSanity()
+	{
+		b = new Board(4, 6);
+		int result = b.place(pyr1,0,0);
+		b.commit();
+		b.setMaxHeight(15);
+		b.sanityCheck();
+		b.setDebug(false);
+		b.sanityCheck();
+		b.setDebug(true);
+		b.setHeights(new int[]{0,0,0,0});
+		b.sanityCheck();
+		b.setWidths(new int[]{0,0,0,0});
+		b.sanityCheck();
+
 	}
 }

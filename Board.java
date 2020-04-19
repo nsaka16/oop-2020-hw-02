@@ -72,8 +72,28 @@ public class Board	{
 	public int getMaxHeight() {	 
 		return maxHeight;
 	}
-	
-	
+
+
+	public void setMaxHeight( int max ){
+		this.maxHeight = max;
+	}
+
+	public void setHeights(int[] array)
+	{
+		this.heights = array;
+	}
+
+	public void setWidths(int[] array)
+	{
+		this.widths = array;
+	}
+
+	public void setDebug(boolean b)
+	{
+		this.DEBUG = b;
+	}
+
+
 	/**
 	 Checks the board for internal consistency -- used
 	 for debugging.
@@ -90,13 +110,12 @@ public class Board	{
 					{
 						if(grid[x][y])
 						{
-							if(y+1>currentHeights[x]){
-								currentHeights[x]=y+1;
-								if(currentHeights[x] > currentMaxHeight)
-								{
-									currentMaxHeight = currentHeights[x];
-								}
+							currentHeights[x]=y+1;
+							if(currentHeights[x] > currentMaxHeight)
+							{
+								currentMaxHeight = currentHeights[x];
 							}
+
 							currentWidths[y]++;
 						}
 					}
@@ -107,12 +126,12 @@ public class Board	{
 			}
 			catch (RuntimeException e)
 			{
-				System.out.println(e);
+				//System.out.println(e);
 			}
-
 		}
 	}
-	
+
+
 	/**
 	 Given a piece and an x, returns the y
 	 value where the piece would come to rest
