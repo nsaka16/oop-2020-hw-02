@@ -9,7 +9,6 @@ public class JBrainTetris extends  JTetris {
      *
      * @param pixels
      */
-
     DefaultBrain brain;
     JCheckBox brainActive;
     Brain.Move goal;
@@ -29,6 +28,7 @@ public class JBrainTetris extends  JTetris {
     {   boolean tck = true;
         if(verb == DOWN)
         {
+            //If verb is Down first brain should process activity.
             if(brainActive.isSelected()) tck = brainActivity(verb);
         }
         if(tck)super.tick(verb);
@@ -81,8 +81,6 @@ public class JBrainTetris extends  JTetris {
        return little;
    }
 
-
-
     @Override
     public Piece pickNextPiece()
     {
@@ -111,7 +109,6 @@ public class JBrainTetris extends  JTetris {
             }
             return worstPiece;
         }
-
     }
 
     public static void main(String[] args) {

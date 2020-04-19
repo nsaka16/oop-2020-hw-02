@@ -79,38 +79,38 @@ public class Board	{
 	 for debugging.
 	*/
 	public void sanityCheck() {
-		if (DEBUG) {
-			try{
-				int currentMaxHeight = 0;
-				int currentWidths[] = new int[height];
-				int currentHeights[] = new int[width];
-				for(int x=0; x<width; x++)
-				{
-					for(int y=0; y<height; y++)
-					{
-						if(grid[x][y])
-						{
-							if(y+1>currentHeights[x]){
-								currentHeights[x]=y+1;
-								if(currentHeights[x] > currentMaxHeight)
-								{
-									currentMaxHeight = currentHeights[x];
-								}
-							}
-							currentWidths[y]++;
-						}
-					}
-				}
-				if(!Arrays.equals(currentWidths, widths)) throw new RuntimeException("Widths not sane.");
-				if(!Arrays.equals(currentHeights, heights)) throw new RuntimeException("Heights not sane.");
-				if(currentMaxHeight != maxHeight ) throw new RuntimeException("Max. height not sane.");
-			}
-			catch (RuntimeException e)
-			{
-				System.out.println(e);
-			}
-
-		}
+//		if (DEBUG) {
+//			try{
+//				int currentMaxHeight = 0;
+//				int currentWidths[] = new int[height];
+//				int currentHeights[] = new int[width];
+//				for(int x=0; x<width; x++)
+//				{
+//					for(int y=0; y<height; y++)
+//					{
+//						if(grid[x][y])
+//						{
+//							if(y+1>currentHeights[x]){
+//								currentHeights[x]=y+1;
+//								if(currentHeights[x] > currentMaxHeight)
+//								{
+//									currentMaxHeight = currentHeights[x];
+//								}
+//							}
+//							currentWidths[y]++;
+//						}
+//					}
+//				}
+//				if(!Arrays.equals(currentWidths, widths)) throw new RuntimeException("Widths not sane.");
+//				if(!Arrays.equals(currentHeights, heights)) throw new RuntimeException("Heights not sane.");
+//				if(currentMaxHeight != maxHeight ) throw new RuntimeException("Max. height not sane.");
+//			}
+//			catch (RuntimeException e)
+//			{
+//				System.out.println(e);
+//			}
+//
+//		}
 	}
 	
 	/**
@@ -184,6 +184,7 @@ public class Board	{
 	//Checking y bounds.
 	private boolean yInBounds( int y )
 	{
+
 		return y >= 0 && y < height;
 	}
 
